@@ -1,0 +1,2934 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : free open source ANSI-C Compiler
+                              3 ; Version 3.6.0 #9615 (Linux)
+                              4 ;--------------------------------------------------------
+                              5 	.module Snek
+                              6 	.optsdcc -mgbz80
+                              7 	
+                              8 ;--------------------------------------------------------
+                              9 ; Public variables in this module
+                             10 ;--------------------------------------------------------
+                             11 	.globl _main
+                             12 	.globl _change
+                             13 	.globl _update
+                             14 	.globl _grow
+                             15 	.globl _move_sprite
+                             16 	.globl _set_sprite_tile
+                             17 	.globl _set_sprite_data
+                             18 	.globl _wait_vbl_done
+                             19 	.globl _joypad
+                             20 	.globl _delay
+                             21 	.globl _S
+                             22 	.globl _pastdir
+                             23 	.globl _pasty
+                             24 	.globl _pastx
+                             25 	.globl _newdir
+                             26 	.globl _newy
+                             27 	.globl _newx
+                             28 	.globl _i
+                             29 	.globl _addy
+                             30 	.globl _addx
+                             31 	.globl _size
+                             32 	.globl _food
+                             33 	.globl _body
+                             34 ;--------------------------------------------------------
+                             35 ; ram data
+                             36 ;--------------------------------------------------------
+                             37 	.area _DATA
+   0000                      38 _body::
+   0000                      39 	.ds 16
+   0010                      40 _food::
+   0010                      41 	.ds 16
+   0020                      42 _size::
+   0020                      43 	.ds 2
+   0022                      44 _addx::
+   0022                      45 	.ds 2
+   0024                      46 _addy::
+   0024                      47 	.ds 2
+   0026                      48 _i::
+   0026                      49 	.ds 2
+   0028                      50 _newx::
+   0028                      51 	.ds 2
+   002A                      52 _newy::
+   002A                      53 	.ds 2
+   002C                      54 _newdir::
+   002C                      55 	.ds 1
+   002D                      56 _pastx::
+   002D                      57 	.ds 2
+   002F                      58 _pasty::
+   002F                      59 	.ds 2
+   0031                      60 _pastdir::
+   0031                      61 	.ds 1
+   0032                      62 _S::
+   0032                      63 	.ds 50
+                             64 ;--------------------------------------------------------
+                             65 ; absolute external ram data
+                             66 ;--------------------------------------------------------
+                             67 	.area _DABS (ABS)
+                             68 ;--------------------------------------------------------
+                             69 ; global & static initialisations
+                             70 ;--------------------------------------------------------
+                             71 	.area _HOME
+                             72 	.area _GSINIT
+                             73 	.area _GSFINAL
+                             74 	.area _GSINIT
+                             75 ;Body.c:26: unsigned char body[] =
+   0000 21r00r00             76 	ld	hl,#_body
+   0003 36 FF                77 	ld	(hl),#0xff
+   0005 21r01r00             78 	ld	hl,#(_body + 0x0001)
+   0008 36 FF                79 	ld	(hl),#0xff
+   000A 21r02r00             80 	ld	hl,#(_body + 0x0002)
+   000D 36 FF                81 	ld	(hl),#0xff
+   000F 21r03r00             82 	ld	hl,#(_body + 0x0003)
+   0012 36 FF                83 	ld	(hl),#0xff
+   0014 21r04r00             84 	ld	hl,#(_body + 0x0004)
+   0017 36 FF                85 	ld	(hl),#0xff
+   0019 21r05r00             86 	ld	hl,#(_body + 0x0005)
+   001C 36 FF                87 	ld	(hl),#0xff
+   001E 21r06r00             88 	ld	hl,#(_body + 0x0006)
+   0021 36 FF                89 	ld	(hl),#0xff
+   0023 21r07r00             90 	ld	hl,#(_body + 0x0007)
+   0026 36 FF                91 	ld	(hl),#0xff
+   0028 21r08r00             92 	ld	hl,#(_body + 0x0008)
+   002B 36 FF                93 	ld	(hl),#0xff
+   002D 21r09r00             94 	ld	hl,#(_body + 0x0009)
+   0030 36 FF                95 	ld	(hl),#0xff
+   0032 21r0Ar00             96 	ld	hl,#(_body + 0x000a)
+   0035 36 FF                97 	ld	(hl),#0xff
+   0037 21r0Br00             98 	ld	hl,#(_body + 0x000b)
+   003A 36 FF                99 	ld	(hl),#0xff
+   003C 21r0Cr00            100 	ld	hl,#(_body + 0x000c)
+   003F 36 FF               101 	ld	(hl),#0xff
+   0041 21r0Dr00            102 	ld	hl,#(_body + 0x000d)
+   0044 36 FF               103 	ld	(hl),#0xff
+   0046 21r0Er00            104 	ld	hl,#(_body + 0x000e)
+   0049 36 FF               105 	ld	(hl),#0xff
+   004B 21r0Fr00            106 	ld	hl,#(_body + 0x000f)
+   004E 36 FF               107 	ld	(hl),#0xff
+                            108 ;Food.c:26: unsigned char food[] =
+   0050 21r10r00            109 	ld	hl,#_food
+   0053 36 00               110 	ld	(hl),#0x00
+   0055 21r11r00            111 	ld	hl,#(_food + 0x0001)
+   0058 36 3C               112 	ld	(hl),#0x3c
+   005A 21r12r00            113 	ld	hl,#(_food + 0x0002)
+   005D 36 00               114 	ld	(hl),#0x00
+   005F 21r13r00            115 	ld	hl,#(_food + 0x0003)
+   0062 36 42               116 	ld	(hl),#0x42
+   0064 21r14r00            117 	ld	hl,#(_food + 0x0004)
+   0067 36 00               118 	ld	(hl),#0x00
+   0069 21r15r00            119 	ld	hl,#(_food + 0x0005)
+   006C 36 81               120 	ld	(hl),#0x81
+   006E 21r16r00            121 	ld	hl,#(_food + 0x0006)
+   0071 36 00               122 	ld	(hl),#0x00
+   0073 21r17r00            123 	ld	hl,#(_food + 0x0007)
+   0076 36 81               124 	ld	(hl),#0x81
+   0078 21r18r00            125 	ld	hl,#(_food + 0x0008)
+   007B 36 00               126 	ld	(hl),#0x00
+   007D 21r19r00            127 	ld	hl,#(_food + 0x0009)
+   0080 36 81               128 	ld	(hl),#0x81
+   0082 21r1Ar00            129 	ld	hl,#(_food + 0x000a)
+   0085 36 00               130 	ld	(hl),#0x00
+   0087 21r1Br00            131 	ld	hl,#(_food + 0x000b)
+   008A 36 81               132 	ld	(hl),#0x81
+   008C 21r1Cr00            133 	ld	hl,#(_food + 0x000c)
+   008F 36 00               134 	ld	(hl),#0x00
+   0091 21r1Dr00            135 	ld	hl,#(_food + 0x000d)
+   0094 36 42               136 	ld	(hl),#0x42
+   0096 21r1Er00            137 	ld	hl,#(_food + 0x000e)
+   0099 36 00               138 	ld	(hl),#0x00
+   009B 21r1Fr00            139 	ld	hl,#(_food + 0x000f)
+   009E 36 3C               140 	ld	(hl),#0x3c
+                            141 ;Snek.c:5: int size = 1; // Initial size.
+   00A0 21r20r00            142 	ld	hl,#_size
+   00A3 36 01               143 	ld	(hl),#0x01
+   00A5 23                  144 	inc	hl
+   00A6 36 00               145 	ld	(hl),#0x00
+                            146 ;Snek.c:24: struct Snek S[10] ={
+   00A8 21r32r00            147 	ld	hl,#_S
+   00AB 36 50               148 	ld	(hl),#0x50
+   00AD 23                  149 	inc	hl
+   00AE 36 00               150 	ld	(hl),#0x00
+   00B0 21r34r00            151 	ld	hl,#(_S + 0x0002)
+   00B3 36 50               152 	ld	(hl),#0x50
+   00B5 23                  153 	inc	hl
+   00B6 36 00               154 	ld	(hl),#0x00
+   00B8 21r36r00            155 	ld	hl,#(_S + 0x0004)
+   00BB 36 72               156 	ld	(hl),#0x72
+   00BD 21r37r00            157 	ld	hl,#(_S + 0x0005)
+   00C0 36 00               158 	ld	(hl),#0x00
+   00C2 23                  159 	inc	hl
+   00C3 36 00               160 	ld	(hl),#0x00
+   00C5 21r39r00            161 	ld	hl,#(_S + 0x0007)
+   00C8 36 00               162 	ld	(hl),#0x00
+   00CA 23                  163 	inc	hl
+   00CB 36 00               164 	ld	(hl),#0x00
+   00CD 21r3Br00            165 	ld	hl,#(_S + 0x0009)
+   00D0 36 72               166 	ld	(hl),#0x72
+   00D2 21r3Cr00            167 	ld	hl,#(_S + 0x000a)
+   00D5 36 00               168 	ld	(hl),#0x00
+   00D7 23                  169 	inc	hl
+   00D8 36 00               170 	ld	(hl),#0x00
+   00DA 21r3Er00            171 	ld	hl,#(_S + 0x000c)
+   00DD 36 00               172 	ld	(hl),#0x00
+   00DF 23                  173 	inc	hl
+   00E0 36 00               174 	ld	(hl),#0x00
+   00E2 21r40r00            175 	ld	hl,#(_S + 0x000e)
+   00E5 36 72               176 	ld	(hl),#0x72
+   00E7 21r41r00            177 	ld	hl,#(_S + 0x000f)
+   00EA 36 00               178 	ld	(hl),#0x00
+   00EC 23                  179 	inc	hl
+   00ED 36 00               180 	ld	(hl),#0x00
+   00EF 21r43r00            181 	ld	hl,#(_S + 0x0011)
+   00F2 36 00               182 	ld	(hl),#0x00
+   00F4 23                  183 	inc	hl
+   00F5 36 00               184 	ld	(hl),#0x00
+   00F7 21r45r00            185 	ld	hl,#(_S + 0x0013)
+   00FA 36 72               186 	ld	(hl),#0x72
+   00FC 21r46r00            187 	ld	hl,#(_S + 0x0014)
+   00FF 36 00               188 	ld	(hl),#0x00
+   0101 23                  189 	inc	hl
+   0102 36 00               190 	ld	(hl),#0x00
+   0104 21r48r00            191 	ld	hl,#(_S + 0x0016)
+   0107 36 00               192 	ld	(hl),#0x00
+   0109 23                  193 	inc	hl
+   010A 36 00               194 	ld	(hl),#0x00
+   010C 21r4Ar00            195 	ld	hl,#(_S + 0x0018)
+   010F 36 72               196 	ld	(hl),#0x72
+   0111 21r4Br00            197 	ld	hl,#(_S + 0x0019)
+   0114 36 00               198 	ld	(hl),#0x00
+   0116 23                  199 	inc	hl
+   0117 36 00               200 	ld	(hl),#0x00
+   0119 21r4Dr00            201 	ld	hl,#(_S + 0x001b)
+   011C 36 00               202 	ld	(hl),#0x00
+   011E 23                  203 	inc	hl
+   011F 36 00               204 	ld	(hl),#0x00
+   0121 21r4Fr00            205 	ld	hl,#(_S + 0x001d)
+   0124 36 72               206 	ld	(hl),#0x72
+   0126 21r50r00            207 	ld	hl,#(_S + 0x001e)
+   0129 36 00               208 	ld	(hl),#0x00
+   012B 23                  209 	inc	hl
+   012C 36 00               210 	ld	(hl),#0x00
+   012E 21r52r00            211 	ld	hl,#(_S + 0x0020)
+   0131 36 00               212 	ld	(hl),#0x00
+   0133 23                  213 	inc	hl
+   0134 36 00               214 	ld	(hl),#0x00
+   0136 21r54r00            215 	ld	hl,#(_S + 0x0022)
+   0139 36 72               216 	ld	(hl),#0x72
+   013B 21r55r00            217 	ld	hl,#(_S + 0x0023)
+   013E 36 00               218 	ld	(hl),#0x00
+   0140 23                  219 	inc	hl
+   0141 36 00               220 	ld	(hl),#0x00
+   0143 21r57r00            221 	ld	hl,#(_S + 0x0025)
+   0146 36 00               222 	ld	(hl),#0x00
+   0148 23                  223 	inc	hl
+   0149 36 00               224 	ld	(hl),#0x00
+   014B 21r59r00            225 	ld	hl,#(_S + 0x0027)
+   014E 36 72               226 	ld	(hl),#0x72
+   0150 21r5Ar00            227 	ld	hl,#(_S + 0x0028)
+   0153 36 00               228 	ld	(hl),#0x00
+   0155 23                  229 	inc	hl
+   0156 36 00               230 	ld	(hl),#0x00
+   0158 21r5Cr00            231 	ld	hl,#(_S + 0x002a)
+   015B 36 00               232 	ld	(hl),#0x00
+   015D 23                  233 	inc	hl
+   015E 36 00               234 	ld	(hl),#0x00
+   0160 21r5Er00            235 	ld	hl,#(_S + 0x002c)
+   0163 36 72               236 	ld	(hl),#0x72
+   0165 21r5Fr00            237 	ld	hl,#(_S + 0x002d)
+   0168 36 00               238 	ld	(hl),#0x00
+   016A 23                  239 	inc	hl
+   016B 36 00               240 	ld	(hl),#0x00
+   016D 21r61r00            241 	ld	hl,#(_S + 0x002f)
+   0170 36 00               242 	ld	(hl),#0x00
+   0172 23                  243 	inc	hl
+   0173 36 00               244 	ld	(hl),#0x00
+   0175 21r63r00            245 	ld	hl,#(_S + 0x0031)
+   0178 36 72               246 	ld	(hl),#0x72
+                            247 ;--------------------------------------------------------
+                            248 ; Home
+                            249 ;--------------------------------------------------------
+                            250 	.area _HOME
+                            251 	.area _HOME
+                            252 ;--------------------------------------------------------
+                            253 ; code
+                            254 ;--------------------------------------------------------
+                            255 	.area _CODE
+                            256 ;Snek.c:39: void grow()
+                            257 ;	---------------------------------
+                            258 ; Function grow
+                            259 ; ---------------------------------
+   0000                     260 _grow::
+   0000 E8 FB               261 	add	sp, #-5
+                            262 ;Snek.c:42: set_sprite_tile(size,0);
+   0002 21r20r00            263 	ld	hl,#_size
+   0005 46                  264 	ld	b,(hl)
+   0006 AF                  265 	xor	a, a
+   0007 F5                  266 	push	af
+   0008 33                  267 	inc	sp
+   0009 C5                  268 	push	bc
+   000A 33                  269 	inc	sp
+   000B CDr00r00            270 	call	_set_sprite_tile
+   000E E8 02               271 	add	sp, #2
+                            272 ;Snek.c:45: switch(S[size-1].dir)
+   0010 21r20r00            273 	ld	hl,#_size
+   0013 4E                  274 	ld	c,(hl)
+   0014 0D                  275 	dec	c
+   0015 79                  276 	ld	a, c
+   0016 CB 07               277 	rlc	a
+   0018 9F                  278 	sbc	a, a
+   0019 47                  279 	ld	b, a
+   001A 69                  280 	ld	l, c
+   001B 60                  281 	ld	h, b
+   001C 29                  282 	add	hl, hl
+   001D 29                  283 	add	hl, hl
+   001E 09                  284 	add	hl, bc
+   001F 4D                  285 	ld	c,l
+   0020 44                  286 	ld	b,h
+   0021 21r32r00            287 	ld	hl,#_S
+   0024 09                  288 	add	hl,bc
+   0025 4D                  289 	ld	c,l
+   0026 44                  290 	ld	b,h
+   0027 21 04 00            291 	ld	hl,#0x0004
+   002A 09                  292 	add	hl,bc
+   002B 33                  293 	inc	sp
+   002C 33                  294 	inc	sp
+   002D E5                  295 	push	hl
+   002E D1                  296 	pop	de
+   002F D5                  297 	push	de
+   0030 1A                  298 	ld	a,(de)
+   0031 F8 00               299 	ldhl	sp,#0
+   0033 77                  300 	ld	(hl),a
+                            301 ;Snek.c:42: set_sprite_tile(size,0);
+   0034 E5                  302 	push	hl
+   0035 21r20r00            303 	ld	hl,#_size
+   0038 7E                  304 	ld	a,(hl)
+   0039 F8 04               305 	ldhl	sp,#4
+   003B 77                  306 	ld	(hl),a
+   003C E1                  307 	pop	hl
+                            308 ;Snek.c:51: addy = S[size-1].ypos ;
+   003D 21 02 00            309 	ld	hl,#0x0002
+   0040 09                  310 	add	hl,bc
+   0041 7D                  311 	ld	a,l
+   0042 54                  312 	ld	d,h
+   0043 F8 03               313 	ldhl	sp,#3
+   0045 22                  314 	ld	(hl+),a
+   0046 72                  315 	ld	(hl),d
+                            316 ;Snek.c:45: switch(S[size-1].dir)
+   0047 F8 00               317 	ldhl	sp,#0
+   0049 7E                  318 	ld	a,(hl)
+   004A D6 64               319 	sub	a, #0x64
+   004C CAr4Cr03            320 	jp	Z,00104$
+   004F F8 00               321 	ldhl	sp,#0
+   0051 7E                  322 	ld	a,(hl)
+   0052 D6 6C               323 	sub	a, #0x6c
+   0054 CAr61r01            324 	jp	Z,00102$
+   0057 F8 00               325 	ldhl	sp,#0
+   0059 7E                  326 	ld	a,(hl)
+   005A D6 72               327 	sub	a, #0x72
+   005C 28 0B               328 	jr	Z,00101$
+   005E F8 00               329 	ldhl	sp,#0
+   0060 7E                  330 	ld	a,(hl)
+   0061 D6 75               331 	sub	a, #0x75
+   0063 CAr56r02            332 	jp	Z,00103$
+   0066 C3r52r04            333 	jp	00105$
+                            334 ;Snek.c:48: case 'r':
+   0069                     335 00101$:
+                            336 ;Snek.c:50: addx = S[size-1].xpos - 8 ;
+   0069 59                  337 	ld	e, c
+   006A 50                  338 	ld	d, b
+   006B 1A                  339 	ld	a,(de)
+   006C 4F                  340 	ld	c,a
+   006D 13                  341 	inc	de
+   006E 1A                  342 	ld	a,(de)
+   006F 47                  343 	ld	b,a
+   0070 79                  344 	ld	a,c
+   0071 C6 F8               345 	add	a,#0xf8
+   0073 21r22r00            346 	ld	hl,#_addx
+   0076 77                  347 	ld	(hl),a
+   0077 78                  348 	ld	a,b
+   0078 CE FF               349 	adc	a,#0xff
+   007A 23                  350 	inc	hl
+   007B 77                  351 	ld	(hl),a
+                            352 ;Snek.c:51: addy = S[size-1].ypos ;
+   007C F8 03               353 	ldhl	sp,#(4 - 1)
+   007E 5E                  354 	ld	e,(hl)
+   007F 23                  355 	inc	hl
+   0080 56                  356 	ld	d,(hl)
+   0081 1A                  357 	ld	a,(de)
+   0082 21r24r00            358 	ld	hl,#_addy
+   0085 22                  359 	ld	(hl+),a
+   0086 13                  360 	inc	de
+   0087 1A                  361 	ld	a,(de)
+                            362 ;Snek.c:52: move_sprite(size,addx,addy);
+   0088 32                  363 	ld	(hl-),a
+   0089 56                  364 	ld	d,(hl)
+   008A 21r22r00            365 	ld	hl,#_addx
+   008D 46                  366 	ld	b,(hl)
+   008E D5                  367 	push	de
+   008F 33                  368 	inc	sp
+   0090 C5                  369 	push	bc
+   0091 33                  370 	inc	sp
+   0092 F8 04               371 	ldhl	sp,#4
+   0094 7E                  372 	ld	a,(hl)
+   0095 F5                  373 	push	af
+   0096 33                  374 	inc	sp
+   0097 CDr00r00            375 	call	_move_sprite
+   009A E8 03               376 	add	sp, #3
+                            377 ;Snek.c:53: delay(100);
+   009C 21 64 00            378 	ld	hl,#0x0064
+   009F E5                  379 	push	hl
+   00A0 CDr00r00            380 	call	_delay
+   00A3 E8 02               381 	add	sp, #2
+                            382 ;Snek.c:56: S[size].xpos = S[size-1].xpos - 8;
+   00A5 21r21r00            383 	ld	hl,#_size + 1
+   00A8 2B                  384 	dec	hl
+   00A9 4E                  385 	ld	c,(hl)
+   00AA 23                  386 	inc	hl
+   00AB 46                  387 	ld	b,(hl)
+   00AC 69                  388 	ld	l, c
+   00AD 60                  389 	ld	h, b
+   00AE 29                  390 	add	hl, hl
+   00AF 29                  391 	add	hl, hl
+   00B0 09                  392 	add	hl, bc
+   00B1 4D                  393 	ld	c,l
+   00B2 44                  394 	ld	b,h
+   00B3 21r32r00            395 	ld	hl,#_S
+   00B6 09                  396 	add	hl,bc
+   00B7 33                  397 	inc	sp
+   00B8 33                  398 	inc	sp
+   00B9 E5                  399 	push	hl
+   00BA 21r20r00            400 	ld	hl,#_size
+   00BD 4E                  401 	ld	c,(hl)
+   00BE 0D                  402 	dec	c
+   00BF 79                  403 	ld	a, c
+   00C0 CB 07               404 	rlc	a
+   00C2 9F                  405 	sbc	a, a
+   00C3 47                  406 	ld	b, a
+   00C4 69                  407 	ld	l, c
+   00C5 60                  408 	ld	h, b
+   00C6 29                  409 	add	hl, hl
+   00C7 29                  410 	add	hl, hl
+   00C8 09                  411 	add	hl, bc
+   00C9 4D                  412 	ld	c,l
+   00CA 44                  413 	ld	b,h
+   00CB 21r32r00            414 	ld	hl,#_S
+   00CE 09                  415 	add	hl,bc
+   00CF 4D                  416 	ld	c,l
+   00D0 44                  417 	ld	b,h
+   00D1 59                  418 	ld	e, c
+   00D2 50                  419 	ld	d, b
+   00D3 1A                  420 	ld	a,(de)
+   00D4 4F                  421 	ld	c,a
+   00D5 13                  422 	inc	de
+   00D6 1A                  423 	ld	a,(de)
+   00D7 47                  424 	ld	b,a
+   00D8 79                  425 	ld	a,c
+   00D9 C6 F8               426 	add	a,#0xf8
+   00DB 4F                  427 	ld	c,a
+   00DC 78                  428 	ld	a,b
+   00DD CE FF               429 	adc	a,#0xff
+   00DF 47                  430 	ld	b,a
+   00E0 E1                  431 	pop	hl
+   00E1 E5                  432 	push	hl
+   00E2 71                  433 	ld	(hl),c
+   00E3 23                  434 	inc	hl
+   00E4 70                  435 	ld	(hl),b
+                            436 ;Snek.c:57: S[size].ypos = S[size-1].ypos;
+   00E5 21r21r00            437 	ld	hl,#_size + 1
+   00E8 2B                  438 	dec	hl
+   00E9 4E                  439 	ld	c,(hl)
+   00EA 23                  440 	inc	hl
+   00EB 46                  441 	ld	b,(hl)
+   00EC 69                  442 	ld	l, c
+   00ED 60                  443 	ld	h, b
+   00EE 29                  444 	add	hl, hl
+   00EF 29                  445 	add	hl, hl
+   00F0 09                  446 	add	hl, bc
+   00F1 4D                  447 	ld	c,l
+   00F2 44                  448 	ld	b,h
+   00F3 21r32r00            449 	ld	hl,#_S
+   00F6 09                  450 	add	hl,bc
+   00F7 4D                  451 	ld	c,l
+   00F8 44                  452 	ld	b,h
+   00F9 03                  453 	inc	bc
+   00FA 03                  454 	inc	bc
+   00FB 33                  455 	inc	sp
+   00FC 33                  456 	inc	sp
+   00FD C5                  457 	push	bc
+   00FE 21r20r00            458 	ld	hl,#_size
+   0101 4E                  459 	ld	c,(hl)
+   0102 0D                  460 	dec	c
+   0103 79                  461 	ld	a, c
+   0104 CB 07               462 	rlc	a
+   0106 9F                  463 	sbc	a, a
+   0107 47                  464 	ld	b, a
+   0108 69                  465 	ld	l, c
+   0109 60                  466 	ld	h, b
+   010A 29                  467 	add	hl, hl
+   010B 29                  468 	add	hl, hl
+   010C 09                  469 	add	hl, bc
+   010D 4D                  470 	ld	c,l
+   010E 44                  471 	ld	b,h
+   010F 21r32r00            472 	ld	hl,#_S
+   0112 09                  473 	add	hl,bc
+   0113 4D                  474 	ld	c,l
+   0114 44                  475 	ld	b,h
+   0115 03                  476 	inc	bc
+   0116 03                  477 	inc	bc
+   0117 59                  478 	ld	e, c
+   0118 50                  479 	ld	d, b
+   0119 1A                  480 	ld	a,(de)
+   011A 4F                  481 	ld	c,a
+   011B 13                  482 	inc	de
+   011C 1A                  483 	ld	a,(de)
+   011D 47                  484 	ld	b,a
+   011E E1                  485 	pop	hl
+   011F E5                  486 	push	hl
+   0120 71                  487 	ld	(hl),c
+   0121 23                  488 	inc	hl
+   0122 70                  489 	ld	(hl),b
+                            490 ;Snek.c:58: S[size].dir = S[size-1].dir;
+   0123 21r21r00            491 	ld	hl,#_size + 1
+   0126 2B                  492 	dec	hl
+   0127 4E                  493 	ld	c,(hl)
+   0128 23                  494 	inc	hl
+   0129 46                  495 	ld	b,(hl)
+   012A 69                  496 	ld	l, c
+   012B 60                  497 	ld	h, b
+   012C 29                  498 	add	hl, hl
+   012D 29                  499 	add	hl, hl
+   012E 09                  500 	add	hl, bc
+   012F 4D                  501 	ld	c,l
+   0130 44                  502 	ld	b,h
+   0131 21r32r00            503 	ld	hl,#_S
+   0134 09                  504 	add	hl,bc
+   0135 4D                  505 	ld	c,l
+   0136 44                  506 	ld	b,h
+   0137 21 04 00            507 	ld	hl,#0x0004
+   013A 09                  508 	add	hl,bc
+   013B 33                  509 	inc	sp
+   013C 33                  510 	inc	sp
+   013D E5                  511 	push	hl
+   013E 21r20r00            512 	ld	hl,#_size
+   0141 4E                  513 	ld	c,(hl)
+   0142 0D                  514 	dec	c
+   0143 79                  515 	ld	a, c
+   0144 CB 07               516 	rlc	a
+   0146 9F                  517 	sbc	a, a
+   0147 47                  518 	ld	b, a
+   0148 69                  519 	ld	l, c
+   0149 60                  520 	ld	h, b
+   014A 29                  521 	add	hl, hl
+   014B 29                  522 	add	hl, hl
+   014C 09                  523 	add	hl, bc
+   014D 4D                  524 	ld	c,l
+   014E 44                  525 	ld	b,h
+   014F 21r32r00            526 	ld	hl,#_S
+   0152 09                  527 	add	hl,bc
+   0153 4D                  528 	ld	c,l
+   0154 44                  529 	ld	b,h
+   0155 03                  530 	inc	bc
+   0156 03                  531 	inc	bc
+   0157 03                  532 	inc	bc
+   0158 03                  533 	inc	bc
+   0159 0A                  534 	ld	a,(bc)
+   015A 4F                  535 	ld	c,a
+   015B E1                  536 	pop	hl
+   015C E5                  537 	push	hl
+   015D 71                  538 	ld	(hl),c
+                            539 ;Snek.c:59: break ;
+   015E C3r52r04            540 	jp	00105$
+                            541 ;Snek.c:62: case 'l':
+   0161                     542 00102$:
+                            543 ;Snek.c:64: addx = S[size-1].xpos + 8 ;
+   0161 59                  544 	ld	e, c
+   0162 50                  545 	ld	d, b
+   0163 1A                  546 	ld	a,(de)
+   0164 4F                  547 	ld	c,a
+   0165 13                  548 	inc	de
+   0166 1A                  549 	ld	a,(de)
+   0167 47                  550 	ld	b,a
+   0168 21 08 00            551 	ld	hl,#0x0008
+   016B 09                  552 	add	hl,bc
+   016C 7D                  553 	ld	a,l
+   016D 54                  554 	ld	d,h
+   016E 21r22r00            555 	ld	hl,#_addx
+   0171 22                  556 	ld	(hl+),a
+   0172 72                  557 	ld	(hl),d
+                            558 ;Snek.c:65: addy = S[size-1].ypos ;
+   0173 F8 03               559 	ldhl	sp,#(4 - 1)
+   0175 5E                  560 	ld	e,(hl)
+   0176 23                  561 	inc	hl
+   0177 56                  562 	ld	d,(hl)
+   0178 1A                  563 	ld	a,(de)
+   0179 21r24r00            564 	ld	hl,#_addy
+   017C 22                  565 	ld	(hl+),a
+   017D 13                  566 	inc	de
+   017E 1A                  567 	ld	a,(de)
+                            568 ;Snek.c:66: move_sprite(size,addx,addy);
+   017F 32                  569 	ld	(hl-),a
+   0180 56                  570 	ld	d,(hl)
+   0181 21r22r00            571 	ld	hl,#_addx
+   0184 46                  572 	ld	b,(hl)
+   0185 D5                  573 	push	de
+   0186 33                  574 	inc	sp
+   0187 C5                  575 	push	bc
+   0188 33                  576 	inc	sp
+   0189 F8 04               577 	ldhl	sp,#4
+   018B 7E                  578 	ld	a,(hl)
+   018C F5                  579 	push	af
+   018D 33                  580 	inc	sp
+   018E CDr00r00            581 	call	_move_sprite
+   0191 E8 03               582 	add	sp, #3
+                            583 ;Snek.c:67: delay(100);
+   0193 21 64 00            584 	ld	hl,#0x0064
+   0196 E5                  585 	push	hl
+   0197 CDr00r00            586 	call	_delay
+   019A E8 02               587 	add	sp, #2
+                            588 ;Snek.c:68: S[size].xpos = S[size-1].xpos + 8;
+   019C 21r21r00            589 	ld	hl,#_size + 1
+   019F 2B                  590 	dec	hl
+   01A0 4E                  591 	ld	c,(hl)
+   01A1 23                  592 	inc	hl
+   01A2 46                  593 	ld	b,(hl)
+   01A3 69                  594 	ld	l, c
+   01A4 60                  595 	ld	h, b
+   01A5 29                  596 	add	hl, hl
+   01A6 29                  597 	add	hl, hl
+   01A7 09                  598 	add	hl, bc
+   01A8 4D                  599 	ld	c,l
+   01A9 44                  600 	ld	b,h
+   01AA 21r32r00            601 	ld	hl,#_S
+   01AD 09                  602 	add	hl,bc
+   01AE 33                  603 	inc	sp
+   01AF 33                  604 	inc	sp
+   01B0 E5                  605 	push	hl
+   01B1 21r20r00            606 	ld	hl,#_size
+   01B4 4E                  607 	ld	c,(hl)
+   01B5 0D                  608 	dec	c
+   01B6 79                  609 	ld	a, c
+   01B7 CB 07               610 	rlc	a
+   01B9 9F                  611 	sbc	a, a
+   01BA 47                  612 	ld	b, a
+   01BB 69                  613 	ld	l, c
+   01BC 60                  614 	ld	h, b
+   01BD 29                  615 	add	hl, hl
+   01BE 29                  616 	add	hl, hl
+   01BF 09                  617 	add	hl, bc
+   01C0 4D                  618 	ld	c,l
+   01C1 44                  619 	ld	b,h
+   01C2 21r32r00            620 	ld	hl,#_S
+   01C5 09                  621 	add	hl,bc
+   01C6 4D                  622 	ld	c,l
+   01C7 44                  623 	ld	b,h
+   01C8 59                  624 	ld	e, c
+   01C9 50                  625 	ld	d, b
+   01CA 1A                  626 	ld	a,(de)
+   01CB 4F                  627 	ld	c,a
+   01CC 13                  628 	inc	de
+   01CD 1A                  629 	ld	a,(de)
+   01CE 47                  630 	ld	b,a
+   01CF 21 08 00            631 	ld	hl,#0x0008
+   01D2 09                  632 	add	hl,bc
+   01D3 4D                  633 	ld	c,l
+   01D4 44                  634 	ld	b,h
+   01D5 E1                  635 	pop	hl
+   01D6 E5                  636 	push	hl
+   01D7 71                  637 	ld	(hl),c
+   01D8 23                  638 	inc	hl
+   01D9 70                  639 	ld	(hl),b
+                            640 ;Snek.c:69: S[size].ypos = S[size-1].ypos;
+   01DA 21r21r00            641 	ld	hl,#_size + 1
+   01DD 2B                  642 	dec	hl
+   01DE 4E                  643 	ld	c,(hl)
+   01DF 23                  644 	inc	hl
+   01E0 46                  645 	ld	b,(hl)
+   01E1 69                  646 	ld	l, c
+   01E2 60                  647 	ld	h, b
+   01E3 29                  648 	add	hl, hl
+   01E4 29                  649 	add	hl, hl
+   01E5 09                  650 	add	hl, bc
+   01E6 4D                  651 	ld	c,l
+   01E7 44                  652 	ld	b,h
+   01E8 21r32r00            653 	ld	hl,#_S
+   01EB 09                  654 	add	hl,bc
+   01EC 4D                  655 	ld	c,l
+   01ED 44                  656 	ld	b,h
+   01EE 03                  657 	inc	bc
+   01EF 03                  658 	inc	bc
+   01F0 33                  659 	inc	sp
+   01F1 33                  660 	inc	sp
+   01F2 C5                  661 	push	bc
+   01F3 21r20r00            662 	ld	hl,#_size
+   01F6 4E                  663 	ld	c,(hl)
+   01F7 0D                  664 	dec	c
+   01F8 79                  665 	ld	a, c
+   01F9 CB 07               666 	rlc	a
+   01FB 9F                  667 	sbc	a, a
+   01FC 47                  668 	ld	b, a
+   01FD 69                  669 	ld	l, c
+   01FE 60                  670 	ld	h, b
+   01FF 29                  671 	add	hl, hl
+   0200 29                  672 	add	hl, hl
+   0201 09                  673 	add	hl, bc
+   0202 4D                  674 	ld	c,l
+   0203 44                  675 	ld	b,h
+   0204 21r32r00            676 	ld	hl,#_S
+   0207 09                  677 	add	hl,bc
+   0208 4D                  678 	ld	c,l
+   0209 44                  679 	ld	b,h
+   020A 03                  680 	inc	bc
+   020B 03                  681 	inc	bc
+   020C 59                  682 	ld	e, c
+   020D 50                  683 	ld	d, b
+   020E 1A                  684 	ld	a,(de)
+   020F 4F                  685 	ld	c,a
+   0210 13                  686 	inc	de
+   0211 1A                  687 	ld	a,(de)
+   0212 47                  688 	ld	b,a
+   0213 E1                  689 	pop	hl
+   0214 E5                  690 	push	hl
+   0215 71                  691 	ld	(hl),c
+   0216 23                  692 	inc	hl
+   0217 70                  693 	ld	(hl),b
+                            694 ;Snek.c:70: S[size].dir = S[size-1].dir;
+   0218 21r21r00            695 	ld	hl,#_size + 1
+   021B 2B                  696 	dec	hl
+   021C 4E                  697 	ld	c,(hl)
+   021D 23                  698 	inc	hl
+   021E 46                  699 	ld	b,(hl)
+   021F 69                  700 	ld	l, c
+   0220 60                  701 	ld	h, b
+   0221 29                  702 	add	hl, hl
+   0222 29                  703 	add	hl, hl
+   0223 09                  704 	add	hl, bc
+   0224 4D                  705 	ld	c,l
+   0225 44                  706 	ld	b,h
+   0226 21r32r00            707 	ld	hl,#_S
+   0229 09                  708 	add	hl,bc
+   022A 4D                  709 	ld	c,l
+   022B 44                  710 	ld	b,h
+   022C 21 04 00            711 	ld	hl,#0x0004
+   022F 09                  712 	add	hl,bc
+   0230 33                  713 	inc	sp
+   0231 33                  714 	inc	sp
+   0232 E5                  715 	push	hl
+   0233 21r20r00            716 	ld	hl,#_size
+   0236 4E                  717 	ld	c,(hl)
+   0237 0D                  718 	dec	c
+   0238 79                  719 	ld	a, c
+   0239 CB 07               720 	rlc	a
+   023B 9F                  721 	sbc	a, a
+   023C 47                  722 	ld	b, a
+   023D 69                  723 	ld	l, c
+   023E 60                  724 	ld	h, b
+   023F 29                  725 	add	hl, hl
+   0240 29                  726 	add	hl, hl
+   0241 09                  727 	add	hl, bc
+   0242 4D                  728 	ld	c,l
+   0243 44                  729 	ld	b,h
+   0244 21r32r00            730 	ld	hl,#_S
+   0247 09                  731 	add	hl,bc
+   0248 4D                  732 	ld	c,l
+   0249 44                  733 	ld	b,h
+   024A 03                  734 	inc	bc
+   024B 03                  735 	inc	bc
+   024C 03                  736 	inc	bc
+   024D 03                  737 	inc	bc
+   024E 0A                  738 	ld	a,(bc)
+   024F 4F                  739 	ld	c,a
+   0250 E1                  740 	pop	hl
+   0251 E5                  741 	push	hl
+   0252 71                  742 	ld	(hl),c
+                            743 ;Snek.c:71: break ;
+   0253 C3r52r04            744 	jp	00105$
+                            745 ;Snek.c:74: case 'u':
+   0256                     746 00103$:
+                            747 ;Snek.c:75: addx = S[size-1].xpos ;
+   0256 59                  748 	ld	e, c
+   0257 50                  749 	ld	d, b
+   0258 1A                  750 	ld	a,(de)
+   0259 21r22r00            751 	ld	hl,#_addx
+   025C 22                  752 	ld	(hl+),a
+   025D 13                  753 	inc	de
+   025E 1A                  754 	ld	a,(de)
+   025F 77                  755 	ld	(hl),a
+                            756 ;Snek.c:76: addy = S[size-1].ypos +8 ;
+   0260 F8 03               757 	ldhl	sp,#(4 - 1)
+   0262 5E                  758 	ld	e,(hl)
+   0263 23                  759 	inc	hl
+   0264 56                  760 	ld	d,(hl)
+   0265 1A                  761 	ld	a,(de)
+   0266 4F                  762 	ld	c,a
+   0267 13                  763 	inc	de
+   0268 1A                  764 	ld	a,(de)
+   0269 47                  765 	ld	b,a
+   026A 21 08 00            766 	ld	hl,#0x0008
+   026D 09                  767 	add	hl,bc
+   026E 7D                  768 	ld	a,l
+   026F 54                  769 	ld	d,h
+   0270 21r24r00            770 	ld	hl,#_addy
+   0273 22                  771 	ld	(hl+),a
+   0274 72                  772 	ld	(hl),d
+                            773 ;Snek.c:77: move_sprite(size,addx,addy);
+   0275 2B                  774 	dec	hl
+   0276 56                  775 	ld	d,(hl)
+   0277 21r22r00            776 	ld	hl,#_addx
+   027A 46                  777 	ld	b,(hl)
+   027B D5                  778 	push	de
+   027C 33                  779 	inc	sp
+   027D C5                  780 	push	bc
+   027E 33                  781 	inc	sp
+   027F F8 04               782 	ldhl	sp,#4
+   0281 7E                  783 	ld	a,(hl)
+   0282 F5                  784 	push	af
+   0283 33                  785 	inc	sp
+   0284 CDr00r00            786 	call	_move_sprite
+   0287 E8 03               787 	add	sp, #3
+                            788 ;Snek.c:78: delay(100);
+   0289 21 64 00            789 	ld	hl,#0x0064
+   028C E5                  790 	push	hl
+   028D CDr00r00            791 	call	_delay
+   0290 E8 02               792 	add	sp, #2
+                            793 ;Snek.c:79: S[size].xpos = S[size-1].xpos;
+   0292 21r21r00            794 	ld	hl,#_size + 1
+   0295 2B                  795 	dec	hl
+   0296 4E                  796 	ld	c,(hl)
+   0297 23                  797 	inc	hl
+   0298 46                  798 	ld	b,(hl)
+   0299 69                  799 	ld	l, c
+   029A 60                  800 	ld	h, b
+   029B 29                  801 	add	hl, hl
+   029C 29                  802 	add	hl, hl
+   029D 09                  803 	add	hl, bc
+   029E 4D                  804 	ld	c,l
+   029F 44                  805 	ld	b,h
+   02A0 21r32r00            806 	ld	hl,#_S
+   02A3 09                  807 	add	hl,bc
+   02A4 33                  808 	inc	sp
+   02A5 33                  809 	inc	sp
+   02A6 E5                  810 	push	hl
+   02A7 21r20r00            811 	ld	hl,#_size
+   02AA 4E                  812 	ld	c,(hl)
+   02AB 0D                  813 	dec	c
+   02AC 79                  814 	ld	a, c
+   02AD CB 07               815 	rlc	a
+   02AF 9F                  816 	sbc	a, a
+   02B0 47                  817 	ld	b, a
+   02B1 69                  818 	ld	l, c
+   02B2 60                  819 	ld	h, b
+   02B3 29                  820 	add	hl, hl
+   02B4 29                  821 	add	hl, hl
+   02B5 09                  822 	add	hl, bc
+   02B6 4D                  823 	ld	c,l
+   02B7 44                  824 	ld	b,h
+   02B8 21r32r00            825 	ld	hl,#_S
+   02BB 09                  826 	add	hl,bc
+   02BC 4D                  827 	ld	c,l
+   02BD 44                  828 	ld	b,h
+   02BE 59                  829 	ld	e, c
+   02BF 50                  830 	ld	d, b
+   02C0 1A                  831 	ld	a,(de)
+   02C1 4F                  832 	ld	c,a
+   02C2 13                  833 	inc	de
+   02C3 1A                  834 	ld	a,(de)
+   02C4 47                  835 	ld	b,a
+   02C5 E1                  836 	pop	hl
+   02C6 E5                  837 	push	hl
+   02C7 71                  838 	ld	(hl),c
+   02C8 23                  839 	inc	hl
+   02C9 70                  840 	ld	(hl),b
+                            841 ;Snek.c:80: S[size].ypos = S[size-1].ypos + 8;
+   02CA 21r21r00            842 	ld	hl,#_size + 1
+   02CD 2B                  843 	dec	hl
+   02CE 4E                  844 	ld	c,(hl)
+   02CF 23                  845 	inc	hl
+   02D0 46                  846 	ld	b,(hl)
+   02D1 69                  847 	ld	l, c
+   02D2 60                  848 	ld	h, b
+   02D3 29                  849 	add	hl, hl
+   02D4 29                  850 	add	hl, hl
+   02D5 09                  851 	add	hl, bc
+   02D6 4D                  852 	ld	c,l
+   02D7 44                  853 	ld	b,h
+   02D8 21r32r00            854 	ld	hl,#_S
+   02DB 09                  855 	add	hl,bc
+   02DC 4D                  856 	ld	c,l
+   02DD 44                  857 	ld	b,h
+   02DE 03                  858 	inc	bc
+   02DF 03                  859 	inc	bc
+   02E0 33                  860 	inc	sp
+   02E1 33                  861 	inc	sp
+   02E2 C5                  862 	push	bc
+   02E3 21r20r00            863 	ld	hl,#_size
+   02E6 4E                  864 	ld	c,(hl)
+   02E7 0D                  865 	dec	c
+   02E8 79                  866 	ld	a, c
+   02E9 CB 07               867 	rlc	a
+   02EB 9F                  868 	sbc	a, a
+   02EC 47                  869 	ld	b, a
+   02ED 69                  870 	ld	l, c
+   02EE 60                  871 	ld	h, b
+   02EF 29                  872 	add	hl, hl
+   02F0 29                  873 	add	hl, hl
+   02F1 09                  874 	add	hl, bc
+   02F2 4D                  875 	ld	c,l
+   02F3 44                  876 	ld	b,h
+   02F4 21r32r00            877 	ld	hl,#_S
+   02F7 09                  878 	add	hl,bc
+   02F8 4D                  879 	ld	c,l
+   02F9 44                  880 	ld	b,h
+   02FA 03                  881 	inc	bc
+   02FB 03                  882 	inc	bc
+   02FC 59                  883 	ld	e, c
+   02FD 50                  884 	ld	d, b
+   02FE 1A                  885 	ld	a,(de)
+   02FF 4F                  886 	ld	c,a
+   0300 13                  887 	inc	de
+   0301 1A                  888 	ld	a,(de)
+   0302 47                  889 	ld	b,a
+   0303 21 08 00            890 	ld	hl,#0x0008
+   0306 09                  891 	add	hl,bc
+   0307 4D                  892 	ld	c,l
+   0308 44                  893 	ld	b,h
+   0309 E1                  894 	pop	hl
+   030A E5                  895 	push	hl
+   030B 71                  896 	ld	(hl),c
+   030C 23                  897 	inc	hl
+   030D 70                  898 	ld	(hl),b
+                            899 ;Snek.c:81: S[size].dir = S[size-1].dir;
+   030E 21r21r00            900 	ld	hl,#_size + 1
+   0311 2B                  901 	dec	hl
+   0312 4E                  902 	ld	c,(hl)
+   0313 23                  903 	inc	hl
+   0314 46                  904 	ld	b,(hl)
+   0315 69                  905 	ld	l, c
+   0316 60                  906 	ld	h, b
+   0317 29                  907 	add	hl, hl
+   0318 29                  908 	add	hl, hl
+   0319 09                  909 	add	hl, bc
+   031A 4D                  910 	ld	c,l
+   031B 44                  911 	ld	b,h
+   031C 21r32r00            912 	ld	hl,#_S
+   031F 09                  913 	add	hl,bc
+   0320 4D                  914 	ld	c,l
+   0321 44                  915 	ld	b,h
+   0322 21 04 00            916 	ld	hl,#0x0004
+   0325 09                  917 	add	hl,bc
+   0326 33                  918 	inc	sp
+   0327 33                  919 	inc	sp
+   0328 E5                  920 	push	hl
+   0329 21r20r00            921 	ld	hl,#_size
+   032C 4E                  922 	ld	c,(hl)
+   032D 0D                  923 	dec	c
+   032E 79                  924 	ld	a, c
+   032F CB 07               925 	rlc	a
+   0331 9F                  926 	sbc	a, a
+   0332 47                  927 	ld	b, a
+   0333 69                  928 	ld	l, c
+   0334 60                  929 	ld	h, b
+   0335 29                  930 	add	hl, hl
+   0336 29                  931 	add	hl, hl
+   0337 09                  932 	add	hl, bc
+   0338 4D                  933 	ld	c,l
+   0339 44                  934 	ld	b,h
+   033A 21r32r00            935 	ld	hl,#_S
+   033D 09                  936 	add	hl,bc
+   033E 4D                  937 	ld	c,l
+   033F 44                  938 	ld	b,h
+   0340 03                  939 	inc	bc
+   0341 03                  940 	inc	bc
+   0342 03                  941 	inc	bc
+   0343 03                  942 	inc	bc
+   0344 0A                  943 	ld	a,(bc)
+   0345 4F                  944 	ld	c,a
+   0346 E1                  945 	pop	hl
+   0347 E5                  946 	push	hl
+   0348 71                  947 	ld	(hl),c
+                            948 ;Snek.c:82: break ;
+   0349 C3r52r04            949 	jp	00105$
+                            950 ;Snek.c:85: case 'd':
+   034C                     951 00104$:
+                            952 ;Snek.c:86: addx = S[size-1].xpos ;
+   034C 59                  953 	ld	e, c
+   034D 50                  954 	ld	d, b
+   034E 1A                  955 	ld	a,(de)
+   034F 21r22r00            956 	ld	hl,#_addx
+   0352 22                  957 	ld	(hl+),a
+   0353 13                  958 	inc	de
+   0354 1A                  959 	ld	a,(de)
+   0355 77                  960 	ld	(hl),a
+                            961 ;Snek.c:87: addy = S[size-1].ypos -8 ;
+   0356 F8 03               962 	ldhl	sp,#(4 - 1)
+   0358 5E                  963 	ld	e,(hl)
+   0359 23                  964 	inc	hl
+   035A 56                  965 	ld	d,(hl)
+   035B 1A                  966 	ld	a,(de)
+   035C 4F                  967 	ld	c,a
+   035D 13                  968 	inc	de
+   035E 1A                  969 	ld	a,(de)
+   035F 47                  970 	ld	b,a
+   0360 79                  971 	ld	a,c
+   0361 C6 F8               972 	add	a,#0xf8
+   0363 21r24r00            973 	ld	hl,#_addy
+   0366 77                  974 	ld	(hl),a
+   0367 78                  975 	ld	a,b
+   0368 CE FF               976 	adc	a,#0xff
+   036A 23                  977 	inc	hl
+                            978 ;Snek.c:88: move_sprite(size,addx,addy);
+   036B 32                  979 	ld	(hl-),a
+   036C 46                  980 	ld	b,(hl)
+   036D 21r22r00            981 	ld	hl,#_addx
+   0370 56                  982 	ld	d,(hl)
+   0371 C5                  983 	push	bc
+   0372 33                  984 	inc	sp
+   0373 D5                  985 	push	de
+   0374 33                  986 	inc	sp
+   0375 F8 04               987 	ldhl	sp,#4
+   0377 7E                  988 	ld	a,(hl)
+   0378 F5                  989 	push	af
+   0379 33                  990 	inc	sp
+   037A CDr00r00            991 	call	_move_sprite
+   037D E8 03               992 	add	sp, #3
+                            993 ;Snek.c:89: delay(100);
+   037F 21 64 00            994 	ld	hl,#0x0064
+   0382 E5                  995 	push	hl
+   0383 CDr00r00            996 	call	_delay
+   0386 E8 02               997 	add	sp, #2
+                            998 ;Snek.c:90: S[size].xpos = S[size-1].xpos;
+   0388 21r21r00            999 	ld	hl,#_size + 1
+   038B 2B                 1000 	dec	hl
+   038C 4E                 1001 	ld	c,(hl)
+   038D 23                 1002 	inc	hl
+   038E 46                 1003 	ld	b,(hl)
+   038F 69                 1004 	ld	l, c
+   0390 60                 1005 	ld	h, b
+   0391 29                 1006 	add	hl, hl
+   0392 29                 1007 	add	hl, hl
+   0393 09                 1008 	add	hl, bc
+   0394 4D                 1009 	ld	c,l
+   0395 44                 1010 	ld	b,h
+   0396 21r32r00           1011 	ld	hl,#_S
+   0399 09                 1012 	add	hl,bc
+   039A 7D                 1013 	ld	a,l
+   039B 54                 1014 	ld	d,h
+   039C F8 03              1015 	ldhl	sp,#3
+   039E 22                 1016 	ld	(hl+),a
+   039F 72                 1017 	ld	(hl),d
+   03A0 21r20r00           1018 	ld	hl,#_size
+   03A3 4E                 1019 	ld	c,(hl)
+   03A4 0D                 1020 	dec	c
+   03A5 79                 1021 	ld	a, c
+   03A6 CB 07              1022 	rlc	a
+   03A8 9F                 1023 	sbc	a, a
+   03A9 47                 1024 	ld	b, a
+   03AA 69                 1025 	ld	l, c
+   03AB 60                 1026 	ld	h, b
+   03AC 29                 1027 	add	hl, hl
+   03AD 29                 1028 	add	hl, hl
+   03AE 09                 1029 	add	hl, bc
+   03AF 4D                 1030 	ld	c,l
+   03B0 44                 1031 	ld	b,h
+   03B1 21r32r00           1032 	ld	hl,#_S
+   03B4 09                 1033 	add	hl,bc
+   03B5 4D                 1034 	ld	c,l
+   03B6 44                 1035 	ld	b,h
+   03B7 59                 1036 	ld	e, c
+   03B8 50                 1037 	ld	d, b
+   03B9 1A                 1038 	ld	a,(de)
+   03BA 4F                 1039 	ld	c,a
+   03BB 13                 1040 	inc	de
+   03BC 1A                 1041 	ld	a,(de)
+   03BD 47                 1042 	ld	b,a
+   03BE F8 03              1043 	ldhl	sp,#3
+   03C0 2A                 1044 	ld	a,(hl+)
+   03C1 66                 1045 	ld	h,(hl)
+   03C2 6F                 1046 	ld	l,a
+   03C3 71                 1047 	ld	(hl),c
+   03C4 23                 1048 	inc	hl
+   03C5 70                 1049 	ld	(hl),b
+                           1050 ;Snek.c:91: S[size].ypos = S[size-1].ypos - 8;
+   03C6 21r21r00           1051 	ld	hl,#_size + 1
+   03C9 2B                 1052 	dec	hl
+   03CA 4E                 1053 	ld	c,(hl)
+   03CB 23                 1054 	inc	hl
+   03CC 46                 1055 	ld	b,(hl)
+   03CD 69                 1056 	ld	l, c
+   03CE 60                 1057 	ld	h, b
+   03CF 29                 1058 	add	hl, hl
+   03D0 29                 1059 	add	hl, hl
+   03D1 09                 1060 	add	hl, bc
+   03D2 4D                 1061 	ld	c,l
+   03D3 44                 1062 	ld	b,h
+   03D4 21r32r00           1063 	ld	hl,#_S
+   03D7 09                 1064 	add	hl,bc
+   03D8 4D                 1065 	ld	c,l
+   03D9 44                 1066 	ld	b,h
+   03DA 03                 1067 	inc	bc
+   03DB 03                 1068 	inc	bc
+   03DC F8 03              1069 	ldhl	sp,#3
+   03DE 71                 1070 	ld	(hl),c
+   03DF 23                 1071 	inc	hl
+   03E0 70                 1072 	ld	(hl),b
+   03E1 21r20r00           1073 	ld	hl,#_size
+   03E4 4E                 1074 	ld	c,(hl)
+   03E5 0D                 1075 	dec	c
+   03E6 79                 1076 	ld	a, c
+   03E7 CB 07              1077 	rlc	a
+   03E9 9F                 1078 	sbc	a, a
+   03EA 47                 1079 	ld	b, a
+   03EB 69                 1080 	ld	l, c
+   03EC 60                 1081 	ld	h, b
+   03ED 29                 1082 	add	hl, hl
+   03EE 29                 1083 	add	hl, hl
+   03EF 09                 1084 	add	hl, bc
+   03F0 4D                 1085 	ld	c,l
+   03F1 44                 1086 	ld	b,h
+   03F2 21r32r00           1087 	ld	hl,#_S
+   03F5 09                 1088 	add	hl,bc
+   03F6 4D                 1089 	ld	c,l
+   03F7 44                 1090 	ld	b,h
+   03F8 03                 1091 	inc	bc
+   03F9 03                 1092 	inc	bc
+   03FA 59                 1093 	ld	e, c
+   03FB 50                 1094 	ld	d, b
+   03FC 1A                 1095 	ld	a,(de)
+   03FD 4F                 1096 	ld	c,a
+   03FE 13                 1097 	inc	de
+   03FF 1A                 1098 	ld	a,(de)
+   0400 47                 1099 	ld	b,a
+   0401 79                 1100 	ld	a,c
+   0402 C6 F8              1101 	add	a,#0xf8
+   0404 4F                 1102 	ld	c,a
+   0405 78                 1103 	ld	a,b
+   0406 CE FF              1104 	adc	a,#0xff
+   0408 47                 1105 	ld	b,a
+   0409 F8 03              1106 	ldhl	sp,#3
+   040B 2A                 1107 	ld	a,(hl+)
+   040C 66                 1108 	ld	h,(hl)
+   040D 6F                 1109 	ld	l,a
+   040E 71                 1110 	ld	(hl),c
+   040F 23                 1111 	inc	hl
+   0410 70                 1112 	ld	(hl),b
+                           1113 ;Snek.c:92: S[size].dir = S[size-1].dir;
+   0411 21r21r00           1114 	ld	hl,#_size + 1
+   0414 2B                 1115 	dec	hl
+   0415 4E                 1116 	ld	c,(hl)
+   0416 23                 1117 	inc	hl
+   0417 46                 1118 	ld	b,(hl)
+   0418 69                 1119 	ld	l, c
+   0419 60                 1120 	ld	h, b
+   041A 29                 1121 	add	hl, hl
+   041B 29                 1122 	add	hl, hl
+   041C 09                 1123 	add	hl, bc
+   041D 4D                 1124 	ld	c,l
+   041E 44                 1125 	ld	b,h
+   041F 21r32r00           1126 	ld	hl,#_S
+   0422 09                 1127 	add	hl,bc
+   0423 4D                 1128 	ld	c,l
+   0424 44                 1129 	ld	b,h
+   0425 21 04 00           1130 	ld	hl,#0x0004
+   0428 09                 1131 	add	hl,bc
+   0429 7D                 1132 	ld	a,l
+   042A 54                 1133 	ld	d,h
+   042B F8 03              1134 	ldhl	sp,#3
+   042D 22                 1135 	ld	(hl+),a
+   042E 72                 1136 	ld	(hl),d
+   042F 21r20r00           1137 	ld	hl,#_size
+   0432 4E                 1138 	ld	c,(hl)
+   0433 0D                 1139 	dec	c
+   0434 79                 1140 	ld	a, c
+   0435 CB 07              1141 	rlc	a
+   0437 9F                 1142 	sbc	a, a
+   0438 47                 1143 	ld	b, a
+   0439 69                 1144 	ld	l, c
+   043A 60                 1145 	ld	h, b
+   043B 29                 1146 	add	hl, hl
+   043C 29                 1147 	add	hl, hl
+   043D 09                 1148 	add	hl, bc
+   043E 4D                 1149 	ld	c,l
+   043F 44                 1150 	ld	b,h
+   0440 21r32r00           1151 	ld	hl,#_S
+   0443 09                 1152 	add	hl,bc
+   0444 4D                 1153 	ld	c,l
+   0445 44                 1154 	ld	b,h
+   0446 03                 1155 	inc	bc
+   0447 03                 1156 	inc	bc
+   0448 03                 1157 	inc	bc
+   0449 03                 1158 	inc	bc
+   044A 0A                 1159 	ld	a,(bc)
+   044B 4F                 1160 	ld	c,a
+   044C F8 03              1161 	ldhl	sp,#3
+   044E 2A                 1162 	ld	a,(hl+)
+   044F 66                 1163 	ld	h,(hl)
+   0450 6F                 1164 	ld	l,a
+   0451 71                 1165 	ld	(hl),c
+                           1166 ;Snek.c:94: }
+   0452                    1167 00105$:
+                           1168 ;Snek.c:96: SHOW_SPRITES ;
+   0452 11 40 FF           1169 	ld	de,#0xff40
+   0455 1A                 1170 	ld	a,(de)
+   0456 4F                 1171 	ld	c,a
+   0457 06 00              1172 	ld	b,#0x00
+   0459 79                 1173 	ld	a,c
+   045A CB CF              1174 	set	1, a
+   045C 4F                 1175 	ld	c,a
+   045D 21 40 FF           1176 	ld	hl,#0xff40
+   0460 71                 1177 	ld	(hl),c
+                           1178 ;Snek.c:97: size += 1 ;
+   0461 21r20r00           1179 	ld	hl,#_size
+   0464 34                 1180 	inc	(hl)
+   0465 20 02              1181 	jr	NZ,00128$
+   0467 23                 1182 	inc	hl
+   0468 34                 1183 	inc	(hl)
+   0469                    1184 00128$:
+   0469 E8 05              1185 	add	sp, #5
+   046B C9                 1186 	ret
+                           1187 ;Snek.c:101: void update(){
+                           1188 ;	---------------------------------
+                           1189 ; Function update
+                           1190 ; ---------------------------------
+   046C                    1191 _update::
+   046C E8 FB              1192 	add	sp, #-5
+                           1193 ;Snek.c:103: switch(S[0].dir)
+   046E 01r36r00           1194 	ld	bc,#_S + 4
+   0471 0A                 1195 	ld	a,(bc)
+   0472 4F                 1196 	ld	c,a
+   0473 D6 64              1197 	sub	a, #0x64
+   0475 CAr65r0A           1198 	jp	Z,00116$
+   0478 79                 1199 	ld	a,c
+   0479 FE 6C              1200 	cp	a,#0x6c
+   047B 28 0D              1201 	jr	Z,00101$
+   047D FE 72              1202 	cp	a,##0x72
+   047F CAr7Fr06           1203 	jp	Z,00106$
+   0482 D6 75              1204 	sub	a, #0x75
+   0484 CAr70r08           1205 	jp	Z,00111$
+   0487 C3r56r0C           1206 	jp	00134$
+                           1207 ;Snek.c:105: case 'l':
+   048A                    1208 00101$:
+                           1209 ;Snek.c:109: for(i = 0; i != size; i++)
+   048A 21r26r00           1210 	ld	hl,#_i
+   048D 36 00              1211 	ld	(hl),#0x00
+   048F 23                 1212 	inc	hl
+   0490 36 00              1213 	ld	(hl),#0x00
+   0492                    1214 00123$:
+   0492 21r26r00           1215 	ld	hl,#_i
+   0495 7E                 1216 	ld	a,(hl)
+   0496 21r20r00           1217 	ld	hl,#_size
+   0499 96                 1218 	sub	a, (hl)
+   049A 20 0B              1219 	jr	NZ,00204$
+   049C 21r27r00           1220 	ld	hl,#_i + 1
+   049F 7E                 1221 	ld	a,(hl)
+   04A0 21r21r00           1222 	ld	hl,#_size + 1
+   04A3 96                 1223 	sub	a, (hl)
+   04A4 CAr73r06           1224 	jp	Z,00105$
+   04A7                    1225 00204$:
+                           1226 ;Snek.c:115: move_sprite(i,newx,newy);
+   04A7 E5                 1227 	push	hl
+   04A8 21r26r00           1228 	ld	hl,#_i
+   04AB 7E                 1229 	ld	a,(hl)
+   04AC F8 02              1230 	ldhl	sp,#2
+   04AE 77                 1231 	ld	(hl),a
+   04AF E1                 1232 	pop	hl
+                           1233 ;Snek.c:111: if(i == 0){
+   04B0 21r27r00           1234 	ld	hl,#_i + 1
+   04B3 3A                 1235 	ld	a,(hl-)
+   04B4 B6                 1236 	or	a,(hl)
+   04B5 C2rA7r05           1237 	jp	NZ,00103$
+                           1238 ;Snek.c:112: newx = S[i].xpos - 8;
+   04B8 4E                 1239 	ld	c,(hl)
+   04B9 23                 1240 	inc	hl
+   04BA 46                 1241 	ld	b,(hl)
+   04BB 69                 1242 	ld	l, c
+   04BC 60                 1243 	ld	h, b
+   04BD 29                 1244 	add	hl, hl
+   04BE 29                 1245 	add	hl, hl
+   04BF 09                 1246 	add	hl, bc
+   04C0 4D                 1247 	ld	c,l
+   04C1 44                 1248 	ld	b,h
+   04C2 21r32r00           1249 	ld	hl,#_S
+   04C5 09                 1250 	add	hl,bc
+   04C6 7D                 1251 	ld	a,l
+   04C7 54                 1252 	ld	d,h
+   04C8 F8 03              1253 	ldhl	sp,#3
+   04CA 22                 1254 	ld	(hl+),a
+   04CB 72                 1255 	ld	(hl),d
+   04CC 2B                 1256 	dec	hl
+   04CD 5E                 1257 	ld	e,(hl)
+   04CE 23                 1258 	inc	hl
+   04CF 56                 1259 	ld	d,(hl)
+   04D0 1A                 1260 	ld	a,(de)
+   04D1 4F                 1261 	ld	c,a
+   04D2 13                 1262 	inc	de
+   04D3 1A                 1263 	ld	a,(de)
+   04D4 47                 1264 	ld	b,a
+   04D5 79                 1265 	ld	a,c
+   04D6 C6 F8              1266 	add	a,#0xf8
+   04D8 21r28r00           1267 	ld	hl,#_newx
+   04DB 77                 1268 	ld	(hl),a
+   04DC 78                 1269 	ld	a,b
+   04DD CE FF              1270 	adc	a,#0xff
+   04DF 23                 1271 	inc	hl
+   04E0 77                 1272 	ld	(hl),a
+                           1273 ;Snek.c:113: newy = S[i].ypos;
+   04E1 F8 03              1274 	ldhl	sp,#(4 - 1)
+   04E3 4E                 1275 	ld	c,(hl)
+   04E4 23                 1276 	inc	hl
+   04E5 46                 1277 	ld	b,(hl)
+   04E6 03                 1278 	inc	bc
+   04E7 03                 1279 	inc	bc
+   04E8 59                 1280 	ld	e, c
+   04E9 50                 1281 	ld	d, b
+   04EA 1A                 1282 	ld	a,(de)
+   04EB 21r2Ar00           1283 	ld	hl,#_newy
+   04EE 22                 1284 	ld	(hl+),a
+   04EF 13                 1285 	inc	de
+   04F0 1A                 1286 	ld	a,(de)
+   04F1 77                 1287 	ld	(hl),a
+                           1288 ;Snek.c:114: newdir = S[i].dir;
+   04F2 F8 03              1289 	ldhl	sp,#(4 - 1)
+   04F4 5E                 1290 	ld	e,(hl)
+   04F5 23                 1291 	inc	hl
+   04F6 56                 1292 	ld	d,(hl)
+   04F7 21 04 00           1293 	ld	hl,#0x0004
+   04FA 19                 1294 	add	hl,de
+   04FB 4D                 1295 	ld	c,l
+   04FC 44                 1296 	ld	b,h
+   04FD 0A                 1297 	ld	a,(bc)
+   04FE 21r2Cr00           1298 	ld	hl,#_newdir
+   0501 77                 1299 	ld	(hl),a
+                           1300 ;Snek.c:115: move_sprite(i,newx,newy);
+   0502 21r2Ar00           1301 	ld	hl,#_newy
+   0505 56                 1302 	ld	d,(hl)
+   0506 21r28r00           1303 	ld	hl,#_newx
+   0509 46                 1304 	ld	b,(hl)
+   050A D5                 1305 	push	de
+   050B 33                 1306 	inc	sp
+   050C C5                 1307 	push	bc
+   050D 33                 1308 	inc	sp
+   050E F8 02              1309 	ldhl	sp,#2
+   0510 7E                 1310 	ld	a,(hl)
+   0511 F5                 1311 	push	af
+   0512 33                 1312 	inc	sp
+   0513 CDr00r00           1313 	call	_move_sprite
+   0516 E8 03              1314 	add	sp, #3
+                           1315 ;Snek.c:116: pastx = S[i].xpos ;
+   0518 21r27r00           1316 	ld	hl,#_i + 1
+   051B 2B                 1317 	dec	hl
+   051C 4E                 1318 	ld	c,(hl)
+   051D 23                 1319 	inc	hl
+   051E 46                 1320 	ld	b,(hl)
+   051F 69                 1321 	ld	l, c
+   0520 60                 1322 	ld	h, b
+   0521 29                 1323 	add	hl, hl
+   0522 29                 1324 	add	hl, hl
+   0523 09                 1325 	add	hl, bc
+   0524 4D                 1326 	ld	c,l
+   0525 44                 1327 	ld	b,h
+   0526 21r32r00           1328 	ld	hl,#_S
+   0529 09                 1329 	add	hl,bc
+   052A 4D                 1330 	ld	c,l
+   052B 44                 1331 	ld	b,h
+   052C 59                 1332 	ld	e, c
+   052D 50                 1333 	ld	d, b
+   052E 1A                 1334 	ld	a,(de)
+   052F 21r2Dr00           1335 	ld	hl,#_pastx
+   0532 22                 1336 	ld	(hl+),a
+   0533 13                 1337 	inc	de
+   0534 1A                 1338 	ld	a,(de)
+   0535 77                 1339 	ld	(hl),a
+                           1340 ;Snek.c:117: pasty = S[i].ypos;
+   0536 21 02 00           1341 	ld	hl,#0x0002
+   0539 09                 1342 	add	hl,bc
+   053A 7D                 1343 	ld	a,l
+   053B 54                 1344 	ld	d,h
+   053C F8 03              1345 	ldhl	sp,#3
+   053E 22                 1346 	ld	(hl+),a
+   053F 72                 1347 	ld	(hl),d
+   0540 2B                 1348 	dec	hl
+   0541 5E                 1349 	ld	e,(hl)
+   0542 23                 1350 	inc	hl
+   0543 56                 1351 	ld	d,(hl)
+   0544 1A                 1352 	ld	a,(de)
+   0545 21r2Fr00           1353 	ld	hl,#_pasty
+   0548 22                 1354 	ld	(hl+),a
+   0549 13                 1355 	inc	de
+   054A 1A                 1356 	ld	a,(de)
+   054B 77                 1357 	ld	(hl),a
+                           1358 ;Snek.c:118: pastdir = S[i].dir;
+   054C 21 04 00           1359 	ld	hl,#0x0004
+   054F 09                 1360 	add	hl,bc
+   0550 7D                 1361 	ld	a,l
+   0551 54                 1362 	ld	d,h
+   0552 F8 03              1363 	ldhl	sp,#3
+   0554 22                 1364 	ld	(hl+),a
+   0555 72                 1365 	ld	(hl),d
+   0556 2B                 1366 	dec	hl
+   0557 5E                 1367 	ld	e,(hl)
+   0558 23                 1368 	inc	hl
+   0559 56                 1369 	ld	d,(hl)
+   055A 1A                 1370 	ld	a,(de)
+   055B 21r31r00           1371 	ld	hl,#_pastdir
+   055E 77                 1372 	ld	(hl),a
+                           1373 ;Snek.c:120: S[i].xpos = newx;
+   055F 21r28r00           1374 	ld	hl,#_newx
+   0562 7E                 1375 	ld	a,(hl)
+   0563 02                 1376 	ld	(bc),a
+   0564 03                 1377 	inc	bc
+   0565 23                 1378 	inc	hl
+   0566 7E                 1379 	ld	a,(hl)
+   0567 02                 1380 	ld	(bc),a
+                           1381 ;Snek.c:121: S[i].ypos = newy;
+   0568 21r27r00           1382 	ld	hl,#_i + 1
+   056B 2B                 1383 	dec	hl
+   056C 4E                 1384 	ld	c,(hl)
+   056D 23                 1385 	inc	hl
+   056E 46                 1386 	ld	b,(hl)
+   056F 69                 1387 	ld	l, c
+   0570 60                 1388 	ld	h, b
+   0571 29                 1389 	add	hl, hl
+   0572 29                 1390 	add	hl, hl
+   0573 09                 1391 	add	hl, bc
+   0574 4D                 1392 	ld	c,l
+   0575 44                 1393 	ld	b,h
+   0576 21r32r00           1394 	ld	hl,#_S
+   0579 09                 1395 	add	hl,bc
+   057A 4D                 1396 	ld	c,l
+   057B 44                 1397 	ld	b,h
+   057C 03                 1398 	inc	bc
+   057D 03                 1399 	inc	bc
+   057E 21r2Ar00           1400 	ld	hl,#_newy
+   0581 7E                 1401 	ld	a,(hl)
+   0582 02                 1402 	ld	(bc),a
+   0583 03                 1403 	inc	bc
+   0584 23                 1404 	inc	hl
+   0585 7E                 1405 	ld	a,(hl)
+   0586 02                 1406 	ld	(bc),a
+                           1407 ;Snek.c:122: S[i].dir = newdir;
+   0587 21r27r00           1408 	ld	hl,#_i + 1
+   058A 2B                 1409 	dec	hl
+   058B 4E                 1410 	ld	c,(hl)
+   058C 23                 1411 	inc	hl
+   058D 46                 1412 	ld	b,(hl)
+   058E 69                 1413 	ld	l, c
+   058F 60                 1414 	ld	h, b
+   0590 29                 1415 	add	hl, hl
+   0591 29                 1416 	add	hl, hl
+   0592 09                 1417 	add	hl, bc
+   0593 4D                 1418 	ld	c,l
+   0594 44                 1419 	ld	b,h
+   0595 21r32r00           1420 	ld	hl,#_S
+   0598 09                 1421 	add	hl,bc
+   0599 4D                 1422 	ld	c,l
+   059A 44                 1423 	ld	b,h
+   059B 03                 1424 	inc	bc
+   059C 03                 1425 	inc	bc
+   059D 03                 1426 	inc	bc
+   059E 03                 1427 	inc	bc
+   059F 21r2Cr00           1428 	ld	hl,#_newdir
+   05A2 7E                 1429 	ld	a,(hl)
+   05A3 02                 1430 	ld	(bc),a
+   05A4 C3r67r06           1431 	jp	00124$
+   05A7                    1432 00103$:
+                           1433 ;Snek.c:126: newx = pastx ;
+   05A7 21r2Dr00           1434 	ld	hl,#_pastx
+   05AA 2A                 1435 	ld	a,(hl+)
+   05AB 5E                 1436 	ld	e, (hl)
+   05AC 21r28r00           1437 	ld	hl,#_newx
+   05AF 22                 1438 	ld	(hl+),a
+   05B0 73                 1439 	ld	(hl),e
+                           1440 ;Snek.c:127: newy = pasty;
+   05B1 21r2Fr00           1441 	ld	hl,#_pasty
+   05B4 2A                 1442 	ld	a,(hl+)
+   05B5 5E                 1443 	ld	e, (hl)
+   05B6 21r2Ar00           1444 	ld	hl,#_newy
+   05B9 22                 1445 	ld	(hl+),a
+   05BA 73                 1446 	ld	(hl),e
+                           1447 ;Snek.c:128: newdir = pastdir;
+   05BB E5                 1448 	push	hl
+   05BC 21r31r00           1449 	ld	hl,#_pastdir
+   05BF 7E                 1450 	ld	a,(hl)
+   05C0 21r2Cr00           1451 	ld	hl,#_newdir
+   05C3 77                 1452 	ld	(hl),a
+   05C4 E1                 1453 	pop	hl
+                           1454 ;Snek.c:129: move_sprite(i,newx,newy);
+   05C5 21r2Ar00           1455 	ld	hl,#_newy
+   05C8 56                 1456 	ld	d,(hl)
+   05C9 21r28r00           1457 	ld	hl,#_newx
+   05CC 46                 1458 	ld	b,(hl)
+   05CD D5                 1459 	push	de
+   05CE 33                 1460 	inc	sp
+   05CF C5                 1461 	push	bc
+   05D0 33                 1462 	inc	sp
+   05D1 F8 02              1463 	ldhl	sp,#2
+   05D3 7E                 1464 	ld	a,(hl)
+   05D4 F5                 1465 	push	af
+   05D5 33                 1466 	inc	sp
+   05D6 CDr00r00           1467 	call	_move_sprite
+   05D9 E8 03              1468 	add	sp, #3
+                           1469 ;Snek.c:130: pastx = S[i].xpos ;
+   05DB 21r27r00           1470 	ld	hl,#_i + 1
+   05DE 2B                 1471 	dec	hl
+   05DF 4E                 1472 	ld	c,(hl)
+   05E0 23                 1473 	inc	hl
+   05E1 46                 1474 	ld	b,(hl)
+   05E2 69                 1475 	ld	l, c
+   05E3 60                 1476 	ld	h, b
+   05E4 29                 1477 	add	hl, hl
+   05E5 29                 1478 	add	hl, hl
+   05E6 09                 1479 	add	hl, bc
+   05E7 4D                 1480 	ld	c,l
+   05E8 44                 1481 	ld	b,h
+   05E9 21r32r00           1482 	ld	hl,#_S
+   05EC 09                 1483 	add	hl,bc
+   05ED 4D                 1484 	ld	c,l
+   05EE 44                 1485 	ld	b,h
+   05EF 59                 1486 	ld	e, c
+   05F0 50                 1487 	ld	d, b
+   05F1 1A                 1488 	ld	a,(de)
+   05F2 21r2Dr00           1489 	ld	hl,#_pastx
+   05F5 22                 1490 	ld	(hl+),a
+   05F6 13                 1491 	inc	de
+   05F7 1A                 1492 	ld	a,(de)
+   05F8 77                 1493 	ld	(hl),a
+                           1494 ;Snek.c:131: pasty = S[i].ypos;
+   05F9 21 02 00           1495 	ld	hl,#0x0002
+   05FC 09                 1496 	add	hl,bc
+   05FD 7D                 1497 	ld	a,l
+   05FE 54                 1498 	ld	d,h
+   05FF F8 03              1499 	ldhl	sp,#3
+   0601 22                 1500 	ld	(hl+),a
+   0602 72                 1501 	ld	(hl),d
+   0603 2B                 1502 	dec	hl
+   0604 5E                 1503 	ld	e,(hl)
+   0605 23                 1504 	inc	hl
+   0606 56                 1505 	ld	d,(hl)
+   0607 1A                 1506 	ld	a,(de)
+   0608 21r2Fr00           1507 	ld	hl,#_pasty
+   060B 22                 1508 	ld	(hl+),a
+   060C 13                 1509 	inc	de
+   060D 1A                 1510 	ld	a,(de)
+   060E 77                 1511 	ld	(hl),a
+                           1512 ;Snek.c:132: pastdir = S[i].dir;
+   060F 21 04 00           1513 	ld	hl,#0x0004
+   0612 09                 1514 	add	hl,bc
+   0613 7D                 1515 	ld	a,l
+   0614 54                 1516 	ld	d,h
+   0615 F8 03              1517 	ldhl	sp,#3
+   0617 22                 1518 	ld	(hl+),a
+   0618 72                 1519 	ld	(hl),d
+   0619 2B                 1520 	dec	hl
+   061A 5E                 1521 	ld	e,(hl)
+   061B 23                 1522 	inc	hl
+   061C 56                 1523 	ld	d,(hl)
+   061D 1A                 1524 	ld	a,(de)
+   061E 21r31r00           1525 	ld	hl,#_pastdir
+   0621 77                 1526 	ld	(hl),a
+                           1527 ;Snek.c:133: S[i].xpos = newx;
+   0622 21r28r00           1528 	ld	hl,#_newx
+   0625 7E                 1529 	ld	a,(hl)
+   0626 02                 1530 	ld	(bc),a
+   0627 03                 1531 	inc	bc
+   0628 23                 1532 	inc	hl
+   0629 7E                 1533 	ld	a,(hl)
+   062A 02                 1534 	ld	(bc),a
+                           1535 ;Snek.c:134: S[i].ypos = newy;
+   062B 21r27r00           1536 	ld	hl,#_i + 1
+   062E 2B                 1537 	dec	hl
+   062F 4E                 1538 	ld	c,(hl)
+   0630 23                 1539 	inc	hl
+   0631 46                 1540 	ld	b,(hl)
+   0632 69                 1541 	ld	l, c
+   0633 60                 1542 	ld	h, b
+   0634 29                 1543 	add	hl, hl
+   0635 29                 1544 	add	hl, hl
+   0636 09                 1545 	add	hl, bc
+   0637 4D                 1546 	ld	c,l
+   0638 44                 1547 	ld	b,h
+   0639 21r32r00           1548 	ld	hl,#_S
+   063C 09                 1549 	add	hl,bc
+   063D 4D                 1550 	ld	c,l
+   063E 44                 1551 	ld	b,h
+   063F 03                 1552 	inc	bc
+   0640 03                 1553 	inc	bc
+   0641 21r2Ar00           1554 	ld	hl,#_newy
+   0644 7E                 1555 	ld	a,(hl)
+   0645 02                 1556 	ld	(bc),a
+   0646 03                 1557 	inc	bc
+   0647 23                 1558 	inc	hl
+   0648 7E                 1559 	ld	a,(hl)
+   0649 02                 1560 	ld	(bc),a
+                           1561 ;Snek.c:135: S[i].dir = newdir;
+   064A 21r27r00           1562 	ld	hl,#_i + 1
+   064D 2B                 1563 	dec	hl
+   064E 4E                 1564 	ld	c,(hl)
+   064F 23                 1565 	inc	hl
+   0650 46                 1566 	ld	b,(hl)
+   0651 69                 1567 	ld	l, c
+   0652 60                 1568 	ld	h, b
+   0653 29                 1569 	add	hl, hl
+   0654 29                 1570 	add	hl, hl
+   0655 09                 1571 	add	hl, bc
+   0656 4D                 1572 	ld	c,l
+   0657 44                 1573 	ld	b,h
+   0658 21r32r00           1574 	ld	hl,#_S
+   065B 09                 1575 	add	hl,bc
+   065C 4D                 1576 	ld	c,l
+   065D 44                 1577 	ld	b,h
+   065E 03                 1578 	inc	bc
+   065F 03                 1579 	inc	bc
+   0660 03                 1580 	inc	bc
+   0661 03                 1581 	inc	bc
+   0662 21r2Cr00           1582 	ld	hl,#_newdir
+   0665 7E                 1583 	ld	a,(hl)
+   0666 02                 1584 	ld	(bc),a
+   0667                    1585 00124$:
+                           1586 ;Snek.c:109: for(i = 0; i != size; i++)
+   0667 21r26r00           1587 	ld	hl,#_i
+   066A 34                 1588 	inc	(hl)
+   066B C2r92r04           1589 	jp	NZ,00123$
+   066E 23                 1590 	inc	hl
+   066F 34                 1591 	inc	(hl)
+   0670 C3r92r04           1592 	jp	00123$
+   0673                    1593 00105$:
+                           1594 ;Snek.c:138: delay(100);
+   0673 21 64 00           1595 	ld	hl,#0x0064
+   0676 E5                 1596 	push	hl
+   0677 CDr00r00           1597 	call	_delay
+   067A E8 02              1598 	add	sp, #2
+                           1599 ;Snek.c:139: break;
+   067C C3r56r0C           1600 	jp	00134$
+                           1601 ;Snek.c:141: case 'r':
+   067F                    1602 00106$:
+                           1603 ;Snek.c:143: for(i = 0; i != size; i++)
+   067F 21r26r00           1604 	ld	hl,#_i
+   0682 36 00              1605 	ld	(hl),#0x00
+   0684 23                 1606 	inc	hl
+   0685 36 00              1607 	ld	(hl),#0x00
+   0687                    1608 00126$:
+   0687 21r26r00           1609 	ld	hl,#_i
+   068A 7E                 1610 	ld	a,(hl)
+   068B 21r20r00           1611 	ld	hl,#_size
+   068E 96                 1612 	sub	a, (hl)
+   068F 20 0B              1613 	jr	NZ,00206$
+   0691 21r27r00           1614 	ld	hl,#_i + 1
+   0694 7E                 1615 	ld	a,(hl)
+   0695 21r21r00           1616 	ld	hl,#_size + 1
+   0698 96                 1617 	sub	a, (hl)
+   0699 CAr64r08           1618 	jp	Z,00110$
+   069C                    1619 00206$:
+                           1620 ;Snek.c:115: move_sprite(i,newx,newy);
+   069C E5                 1621 	push	hl
+   069D 21r26r00           1622 	ld	hl,#_i
+   06A0 7E                 1623 	ld	a,(hl)
+   06A1 F8 05              1624 	ldhl	sp,#5
+   06A3 77                 1625 	ld	(hl),a
+   06A4 E1                 1626 	pop	hl
+                           1627 ;Snek.c:145: if(i == 0){
+   06A5 21r27r00           1628 	ld	hl,#_i + 1
+   06A8 3A                 1629 	ld	a,(hl-)
+   06A9 B6                 1630 	or	a,(hl)
+   06AA C2r98r07           1631 	jp	NZ,00108$
+                           1632 ;Snek.c:146: newx = S[i].xpos + 8;
+   06AD 4E                 1633 	ld	c,(hl)
+   06AE 23                 1634 	inc	hl
+   06AF 46                 1635 	ld	b,(hl)
+   06B0 69                 1636 	ld	l, c
+   06B1 60                 1637 	ld	h, b
+   06B2 29                 1638 	add	hl, hl
+   06B3 29                 1639 	add	hl, hl
+   06B4 09                 1640 	add	hl, bc
+   06B5 4D                 1641 	ld	c,l
+   06B6 44                 1642 	ld	b,h
+   06B7 21r32r00           1643 	ld	hl,#_S
+   06BA 09                 1644 	add	hl,bc
+   06BB 4D                 1645 	ld	c,l
+   06BC 44                 1646 	ld	b,h
+   06BD 59                 1647 	ld	e, c
+   06BE 50                 1648 	ld	d, b
+   06BF 1A                 1649 	ld	a,(de)
+   06C0 F8 01              1650 	ldhl	sp,#1
+   06C2 22                 1651 	ld	(hl+),a
+   06C3 13                 1652 	inc	de
+   06C4 1A                 1653 	ld	a,(de)
+   06C5 32                 1654 	ld	(hl-),a
+   06C6 5E                 1655 	ld	e,(hl)
+   06C7 23                 1656 	inc	hl
+   06C8 56                 1657 	ld	d,(hl)
+   06C9 21 08 00           1658 	ld	hl,#0x0008
+   06CC 19                 1659 	add	hl,de
+   06CD 7D                 1660 	ld	a,l
+   06CE 54                 1661 	ld	d,h
+   06CF 21r28r00           1662 	ld	hl,#_newx
+   06D2 22                 1663 	ld	(hl+),a
+   06D3 72                 1664 	ld	(hl),d
+                           1665 ;Snek.c:147: newy = S[i].ypos;
+   06D4 21 02 00           1666 	ld	hl,#0x0002
+   06D7 09                 1667 	add	hl,bc
+   06D8 7D                 1668 	ld	a,l
+   06D9 54                 1669 	ld	d,h
+   06DA F8 01              1670 	ldhl	sp,#1
+   06DC 22                 1671 	ld	(hl+),a
+   06DD 72                 1672 	ld	(hl),d
+   06DE 2B                 1673 	dec	hl
+   06DF 5E                 1674 	ld	e,(hl)
+   06E0 23                 1675 	inc	hl
+   06E1 56                 1676 	ld	d,(hl)
+   06E2 1A                 1677 	ld	a,(de)
+   06E3 21r2Ar00           1678 	ld	hl,#_newy
+   06E6 22                 1679 	ld	(hl+),a
+   06E7 13                 1680 	inc	de
+   06E8 1A                 1681 	ld	a,(de)
+   06E9 77                 1682 	ld	(hl),a
+                           1683 ;Snek.c:148: newdir = S[i].dir;
+   06EA 03                 1684 	inc	bc
+   06EB 03                 1685 	inc	bc
+   06EC 03                 1686 	inc	bc
+   06ED 03                 1687 	inc	bc
+   06EE 0A                 1688 	ld	a,(bc)
+   06EF 21r2Cr00           1689 	ld	hl,#_newdir
+   06F2 77                 1690 	ld	(hl),a
+                           1691 ;Snek.c:149: move_sprite(i,newx,newy);
+   06F3 21r2Ar00           1692 	ld	hl,#_newy
+   06F6 56                 1693 	ld	d,(hl)
+   06F7 21r28r00           1694 	ld	hl,#_newx
+   06FA 46                 1695 	ld	b,(hl)
+   06FB D5                 1696 	push	de
+   06FC 33                 1697 	inc	sp
+   06FD C5                 1698 	push	bc
+   06FE 33                 1699 	inc	sp
+   06FF F8 05              1700 	ldhl	sp,#5
+   0701 7E                 1701 	ld	a,(hl)
+   0702 F5                 1702 	push	af
+   0703 33                 1703 	inc	sp
+   0704 CDr00r00           1704 	call	_move_sprite
+   0707 E8 03              1705 	add	sp, #3
+                           1706 ;Snek.c:150: pastx = S[i].xpos ;
+   0709 21r27r00           1707 	ld	hl,#_i + 1
+   070C 2B                 1708 	dec	hl
+   070D 4E                 1709 	ld	c,(hl)
+   070E 23                 1710 	inc	hl
+   070F 46                 1711 	ld	b,(hl)
+   0710 69                 1712 	ld	l, c
+   0711 60                 1713 	ld	h, b
+   0712 29                 1714 	add	hl, hl
+   0713 29                 1715 	add	hl, hl
+   0714 09                 1716 	add	hl, bc
+   0715 4D                 1717 	ld	c,l
+   0716 44                 1718 	ld	b,h
+   0717 21r32r00           1719 	ld	hl,#_S
+   071A 09                 1720 	add	hl,bc
+   071B 4D                 1721 	ld	c,l
+   071C 44                 1722 	ld	b,h
+   071D 59                 1723 	ld	e, c
+   071E 50                 1724 	ld	d, b
+   071F 1A                 1725 	ld	a,(de)
+   0720 21r2Dr00           1726 	ld	hl,#_pastx
+   0723 22                 1727 	ld	(hl+),a
+   0724 13                 1728 	inc	de
+   0725 1A                 1729 	ld	a,(de)
+   0726 77                 1730 	ld	(hl),a
+                           1731 ;Snek.c:151: pasty = S[i].ypos;
+   0727 21 02 00           1732 	ld	hl,#0x0002
+   072A 09                 1733 	add	hl,bc
+   072B 7D                 1734 	ld	a,l
+   072C 54                 1735 	ld	d,h
+   072D F8 01              1736 	ldhl	sp,#1
+   072F 22                 1737 	ld	(hl+),a
+   0730 72                 1738 	ld	(hl),d
+   0731 2B                 1739 	dec	hl
+   0732 5E                 1740 	ld	e,(hl)
+   0733 23                 1741 	inc	hl
+   0734 56                 1742 	ld	d,(hl)
+   0735 1A                 1743 	ld	a,(de)
+   0736 21r2Fr00           1744 	ld	hl,#_pasty
+   0739 22                 1745 	ld	(hl+),a
+   073A 13                 1746 	inc	de
+   073B 1A                 1747 	ld	a,(de)
+   073C 77                 1748 	ld	(hl),a
+                           1749 ;Snek.c:152: pastdir = S[i].dir;
+   073D 21 04 00           1750 	ld	hl,#0x0004
+   0740 09                 1751 	add	hl,bc
+   0741 7D                 1752 	ld	a,l
+   0742 54                 1753 	ld	d,h
+   0743 F8 01              1754 	ldhl	sp,#1
+   0745 22                 1755 	ld	(hl+),a
+   0746 72                 1756 	ld	(hl),d
+   0747 2B                 1757 	dec	hl
+   0748 5E                 1758 	ld	e,(hl)
+   0749 23                 1759 	inc	hl
+   074A 56                 1760 	ld	d,(hl)
+   074B 1A                 1761 	ld	a,(de)
+   074C 21r31r00           1762 	ld	hl,#_pastdir
+   074F 77                 1763 	ld	(hl),a
+                           1764 ;Snek.c:154: S[i].xpos = newx;
+   0750 21r28r00           1765 	ld	hl,#_newx
+   0753 7E                 1766 	ld	a,(hl)
+   0754 02                 1767 	ld	(bc),a
+   0755 03                 1768 	inc	bc
+   0756 23                 1769 	inc	hl
+   0757 7E                 1770 	ld	a,(hl)
+   0758 02                 1771 	ld	(bc),a
+                           1772 ;Snek.c:155: S[i].ypos = newy;
+   0759 21r27r00           1773 	ld	hl,#_i + 1
+   075C 2B                 1774 	dec	hl
+   075D 4E                 1775 	ld	c,(hl)
+   075E 23                 1776 	inc	hl
+   075F 46                 1777 	ld	b,(hl)
+   0760 69                 1778 	ld	l, c
+   0761 60                 1779 	ld	h, b
+   0762 29                 1780 	add	hl, hl
+   0763 29                 1781 	add	hl, hl
+   0764 09                 1782 	add	hl, bc
+   0765 4D                 1783 	ld	c,l
+   0766 44                 1784 	ld	b,h
+   0767 21r32r00           1785 	ld	hl,#_S
+   076A 09                 1786 	add	hl,bc
+   076B 4D                 1787 	ld	c,l
+   076C 44                 1788 	ld	b,h
+   076D 03                 1789 	inc	bc
+   076E 03                 1790 	inc	bc
+   076F 21r2Ar00           1791 	ld	hl,#_newy
+   0772 7E                 1792 	ld	a,(hl)
+   0773 02                 1793 	ld	(bc),a
+   0774 03                 1794 	inc	bc
+   0775 23                 1795 	inc	hl
+   0776 7E                 1796 	ld	a,(hl)
+   0777 02                 1797 	ld	(bc),a
+                           1798 ;Snek.c:156: S[i].dir = newdir;
+   0778 21r27r00           1799 	ld	hl,#_i + 1
+   077B 2B                 1800 	dec	hl
+   077C 4E                 1801 	ld	c,(hl)
+   077D 23                 1802 	inc	hl
+   077E 46                 1803 	ld	b,(hl)
+   077F 69                 1804 	ld	l, c
+   0780 60                 1805 	ld	h, b
+   0781 29                 1806 	add	hl, hl
+   0782 29                 1807 	add	hl, hl
+   0783 09                 1808 	add	hl, bc
+   0784 4D                 1809 	ld	c,l
+   0785 44                 1810 	ld	b,h
+   0786 21r32r00           1811 	ld	hl,#_S
+   0789 09                 1812 	add	hl,bc
+   078A 4D                 1813 	ld	c,l
+   078B 44                 1814 	ld	b,h
+   078C 03                 1815 	inc	bc
+   078D 03                 1816 	inc	bc
+   078E 03                 1817 	inc	bc
+   078F 03                 1818 	inc	bc
+   0790 21r2Cr00           1819 	ld	hl,#_newdir
+   0793 7E                 1820 	ld	a,(hl)
+   0794 02                 1821 	ld	(bc),a
+   0795 C3r58r08           1822 	jp	00127$
+   0798                    1823 00108$:
+                           1824 ;Snek.c:160: newx = pastx ;
+   0798 21r2Dr00           1825 	ld	hl,#_pastx
+   079B 2A                 1826 	ld	a,(hl+)
+   079C 5E                 1827 	ld	e, (hl)
+   079D 21r28r00           1828 	ld	hl,#_newx
+   07A0 22                 1829 	ld	(hl+),a
+   07A1 73                 1830 	ld	(hl),e
+                           1831 ;Snek.c:161: newy = pasty;
+   07A2 21r2Fr00           1832 	ld	hl,#_pasty
+   07A5 2A                 1833 	ld	a,(hl+)
+   07A6 5E                 1834 	ld	e, (hl)
+   07A7 21r2Ar00           1835 	ld	hl,#_newy
+   07AA 22                 1836 	ld	(hl+),a
+   07AB 73                 1837 	ld	(hl),e
+                           1838 ;Snek.c:162: newdir = pastdir;
+   07AC E5                 1839 	push	hl
+   07AD 21r31r00           1840 	ld	hl,#_pastdir
+   07B0 7E                 1841 	ld	a,(hl)
+   07B1 21r2Cr00           1842 	ld	hl,#_newdir
+   07B4 77                 1843 	ld	(hl),a
+   07B5 E1                 1844 	pop	hl
+                           1845 ;Snek.c:163: move_sprite(i,newx,newy);
+   07B6 21r2Ar00           1846 	ld	hl,#_newy
+   07B9 56                 1847 	ld	d,(hl)
+   07BA 21r28r00           1848 	ld	hl,#_newx
+   07BD 46                 1849 	ld	b,(hl)
+   07BE D5                 1850 	push	de
+   07BF 33                 1851 	inc	sp
+   07C0 C5                 1852 	push	bc
+   07C1 33                 1853 	inc	sp
+   07C2 F8 05              1854 	ldhl	sp,#5
+   07C4 7E                 1855 	ld	a,(hl)
+   07C5 F5                 1856 	push	af
+   07C6 33                 1857 	inc	sp
+   07C7 CDr00r00           1858 	call	_move_sprite
+   07CA E8 03              1859 	add	sp, #3
+                           1860 ;Snek.c:164: pastx = S[i].xpos ;
+   07CC 21r27r00           1861 	ld	hl,#_i + 1
+   07CF 2B                 1862 	dec	hl
+   07D0 4E                 1863 	ld	c,(hl)
+   07D1 23                 1864 	inc	hl
+   07D2 46                 1865 	ld	b,(hl)
+   07D3 69                 1866 	ld	l, c
+   07D4 60                 1867 	ld	h, b
+   07D5 29                 1868 	add	hl, hl
+   07D6 29                 1869 	add	hl, hl
+   07D7 09                 1870 	add	hl, bc
+   07D8 4D                 1871 	ld	c,l
+   07D9 44                 1872 	ld	b,h
+   07DA 21r32r00           1873 	ld	hl,#_S
+   07DD 09                 1874 	add	hl,bc
+   07DE 4D                 1875 	ld	c,l
+   07DF 44                 1876 	ld	b,h
+   07E0 59                 1877 	ld	e, c
+   07E1 50                 1878 	ld	d, b
+   07E2 1A                 1879 	ld	a,(de)
+   07E3 21r2Dr00           1880 	ld	hl,#_pastx
+   07E6 22                 1881 	ld	(hl+),a
+   07E7 13                 1882 	inc	de
+   07E8 1A                 1883 	ld	a,(de)
+   07E9 77                 1884 	ld	(hl),a
+                           1885 ;Snek.c:165: pasty = S[i].ypos;
+   07EA 21 02 00           1886 	ld	hl,#0x0002
+   07ED 09                 1887 	add	hl,bc
+   07EE 7D                 1888 	ld	a,l
+   07EF 54                 1889 	ld	d,h
+   07F0 F8 01              1890 	ldhl	sp,#1
+   07F2 22                 1891 	ld	(hl+),a
+   07F3 72                 1892 	ld	(hl),d
+   07F4 2B                 1893 	dec	hl
+   07F5 5E                 1894 	ld	e,(hl)
+   07F6 23                 1895 	inc	hl
+   07F7 56                 1896 	ld	d,(hl)
+   07F8 1A                 1897 	ld	a,(de)
+   07F9 21r2Fr00           1898 	ld	hl,#_pasty
+   07FC 22                 1899 	ld	(hl+),a
+   07FD 13                 1900 	inc	de
+   07FE 1A                 1901 	ld	a,(de)
+   07FF 77                 1902 	ld	(hl),a
+                           1903 ;Snek.c:166: pastdir = S[i].dir;
+   0800 21 04 00           1904 	ld	hl,#0x0004
+   0803 09                 1905 	add	hl,bc
+   0804 7D                 1906 	ld	a,l
+   0805 54                 1907 	ld	d,h
+   0806 F8 01              1908 	ldhl	sp,#1
+   0808 22                 1909 	ld	(hl+),a
+   0809 72                 1910 	ld	(hl),d
+   080A 2B                 1911 	dec	hl
+   080B 5E                 1912 	ld	e,(hl)
+   080C 23                 1913 	inc	hl
+   080D 56                 1914 	ld	d,(hl)
+   080E 1A                 1915 	ld	a,(de)
+   080F 21r31r00           1916 	ld	hl,#_pastdir
+   0812 77                 1917 	ld	(hl),a
+                           1918 ;Snek.c:167: S[i].xpos = newx;
+   0813 21r28r00           1919 	ld	hl,#_newx
+   0816 7E                 1920 	ld	a,(hl)
+   0817 02                 1921 	ld	(bc),a
+   0818 03                 1922 	inc	bc
+   0819 23                 1923 	inc	hl
+   081A 7E                 1924 	ld	a,(hl)
+   081B 02                 1925 	ld	(bc),a
+                           1926 ;Snek.c:168: S[i].ypos = newy;
+   081C 21r27r00           1927 	ld	hl,#_i + 1
+   081F 2B                 1928 	dec	hl
+   0820 4E                 1929 	ld	c,(hl)
+   0821 23                 1930 	inc	hl
+   0822 46                 1931 	ld	b,(hl)
+   0823 69                 1932 	ld	l, c
+   0824 60                 1933 	ld	h, b
+   0825 29                 1934 	add	hl, hl
+   0826 29                 1935 	add	hl, hl
+   0827 09                 1936 	add	hl, bc
+   0828 4D                 1937 	ld	c,l
+   0829 44                 1938 	ld	b,h
+   082A 21r32r00           1939 	ld	hl,#_S
+   082D 09                 1940 	add	hl,bc
+   082E 4D                 1941 	ld	c,l
+   082F 44                 1942 	ld	b,h
+   0830 03                 1943 	inc	bc
+   0831 03                 1944 	inc	bc
+   0832 21r2Ar00           1945 	ld	hl,#_newy
+   0835 7E                 1946 	ld	a,(hl)
+   0836 02                 1947 	ld	(bc),a
+   0837 03                 1948 	inc	bc
+   0838 23                 1949 	inc	hl
+   0839 7E                 1950 	ld	a,(hl)
+   083A 02                 1951 	ld	(bc),a
+                           1952 ;Snek.c:169: S[i].dir = newdir;
+   083B 21r27r00           1953 	ld	hl,#_i + 1
+   083E 2B                 1954 	dec	hl
+   083F 4E                 1955 	ld	c,(hl)
+   0840 23                 1956 	inc	hl
+   0841 46                 1957 	ld	b,(hl)
+   0842 69                 1958 	ld	l, c
+   0843 60                 1959 	ld	h, b
+   0844 29                 1960 	add	hl, hl
+   0845 29                 1961 	add	hl, hl
+   0846 09                 1962 	add	hl, bc
+   0847 4D                 1963 	ld	c,l
+   0848 44                 1964 	ld	b,h
+   0849 21r32r00           1965 	ld	hl,#_S
+   084C 09                 1966 	add	hl,bc
+   084D 4D                 1967 	ld	c,l
+   084E 44                 1968 	ld	b,h
+   084F 03                 1969 	inc	bc
+   0850 03                 1970 	inc	bc
+   0851 03                 1971 	inc	bc
+   0852 03                 1972 	inc	bc
+   0853 21r2Cr00           1973 	ld	hl,#_newdir
+   0856 7E                 1974 	ld	a,(hl)
+   0857 02                 1975 	ld	(bc),a
+   0858                    1976 00127$:
+                           1977 ;Snek.c:143: for(i = 0; i != size; i++)
+   0858 21r26r00           1978 	ld	hl,#_i
+   085B 34                 1979 	inc	(hl)
+   085C C2r87r06           1980 	jp	NZ,00126$
+   085F 23                 1981 	inc	hl
+   0860 34                 1982 	inc	(hl)
+   0861 C3r87r06           1983 	jp	00126$
+   0864                    1984 00110$:
+                           1985 ;Snek.c:172: delay(100);
+   0864 21 64 00           1986 	ld	hl,#0x0064
+   0867 E5                 1987 	push	hl
+   0868 CDr00r00           1988 	call	_delay
+   086B E8 02              1989 	add	sp, #2
+                           1990 ;Snek.c:173: break ;
+   086D C3r56r0C           1991 	jp	00134$
+                           1992 ;Snek.c:175: case 'u':
+   0870                    1993 00111$:
+                           1994 ;Snek.c:177: for(i = 0; i != size; i++)
+   0870 21r26r00           1995 	ld	hl,#_i
+   0873 36 00              1996 	ld	(hl),#0x00
+   0875 23                 1997 	inc	hl
+   0876 36 00              1998 	ld	(hl),#0x00
+   0878                    1999 00129$:
+   0878 21r26r00           2000 	ld	hl,#_i
+   087B 7E                 2001 	ld	a,(hl)
+   087C 21r20r00           2002 	ld	hl,#_size
+   087F 96                 2003 	sub	a, (hl)
+   0880 20 0B              2004 	jr	NZ,00208$
+   0882 21r27r00           2005 	ld	hl,#_i + 1
+   0885 7E                 2006 	ld	a,(hl)
+   0886 21r21r00           2007 	ld	hl,#_size + 1
+   0889 96                 2008 	sub	a, (hl)
+   088A CAr59r0A           2009 	jp	Z,00115$
+   088D                    2010 00208$:
+                           2011 ;Snek.c:115: move_sprite(i,newx,newy);
+   088D E5                 2012 	push	hl
+   088E 21r26r00           2013 	ld	hl,#_i
+   0891 7E                 2014 	ld	a,(hl)
+   0892 F8 03              2015 	ldhl	sp,#3
+   0894 77                 2016 	ld	(hl),a
+   0895 E1                 2017 	pop	hl
+                           2018 ;Snek.c:179: if(i == 0){
+   0896 21r27r00           2019 	ld	hl,#_i + 1
+   0899 3A                 2020 	ld	a,(hl-)
+   089A B6                 2021 	or	a,(hl)
+   089B C2r8Dr09           2022 	jp	NZ,00113$
+                           2023 ;Snek.c:180: newx = S[i].xpos;
+   089E 4E                 2024 	ld	c,(hl)
+   089F 23                 2025 	inc	hl
+   08A0 46                 2026 	ld	b,(hl)
+   08A1 69                 2027 	ld	l, c
+   08A2 60                 2028 	ld	h, b
+   08A3 29                 2029 	add	hl, hl
+   08A4 29                 2030 	add	hl, hl
+   08A5 09                 2031 	add	hl, bc
+   08A6 4D                 2032 	ld	c,l
+   08A7 44                 2033 	ld	b,h
+   08A8 21r32r00           2034 	ld	hl,#_S
+   08AB 09                 2035 	add	hl,bc
+   08AC 7D                 2036 	ld	a,l
+   08AD 54                 2037 	ld	d,h
+   08AE F8 03              2038 	ldhl	sp,#3
+   08B0 22                 2039 	ld	(hl+),a
+   08B1 72                 2040 	ld	(hl),d
+   08B2 2B                 2041 	dec	hl
+   08B3 5E                 2042 	ld	e,(hl)
+   08B4 23                 2043 	inc	hl
+   08B5 56                 2044 	ld	d,(hl)
+   08B6 1A                 2045 	ld	a,(de)
+   08B7 21r28r00           2046 	ld	hl,#_newx
+   08BA 22                 2047 	ld	(hl+),a
+   08BB 13                 2048 	inc	de
+   08BC 1A                 2049 	ld	a,(de)
+   08BD 77                 2050 	ld	(hl),a
+                           2051 ;Snek.c:181: newy = S[i].ypos - 8;
+   08BE F8 03              2052 	ldhl	sp,#(4 - 1)
+   08C0 4E                 2053 	ld	c,(hl)
+   08C1 23                 2054 	inc	hl
+   08C2 46                 2055 	ld	b,(hl)
+   08C3 03                 2056 	inc	bc
+   08C4 03                 2057 	inc	bc
+   08C5 59                 2058 	ld	e, c
+   08C6 50                 2059 	ld	d, b
+   08C7 1A                 2060 	ld	a,(de)
+   08C8 4F                 2061 	ld	c,a
+   08C9 13                 2062 	inc	de
+   08CA 1A                 2063 	ld	a,(de)
+   08CB 47                 2064 	ld	b,a
+   08CC 79                 2065 	ld	a,c
+   08CD C6 F8              2066 	add	a,#0xf8
+   08CF 21r2Ar00           2067 	ld	hl,#_newy
+   08D2 77                 2068 	ld	(hl),a
+   08D3 78                 2069 	ld	a,b
+   08D4 CE FF              2070 	adc	a,#0xff
+   08D6 23                 2071 	inc	hl
+   08D7 77                 2072 	ld	(hl),a
+                           2073 ;Snek.c:182: newdir = S[i].dir;
+   08D8 F8 03              2074 	ldhl	sp,#(4 - 1)
+   08DA 5E                 2075 	ld	e,(hl)
+   08DB 23                 2076 	inc	hl
+   08DC 56                 2077 	ld	d,(hl)
+   08DD 21 04 00           2078 	ld	hl,#0x0004
+   08E0 19                 2079 	add	hl,de
+   08E1 4D                 2080 	ld	c,l
+   08E2 44                 2081 	ld	b,h
+   08E3 0A                 2082 	ld	a,(bc)
+   08E4 21r2Cr00           2083 	ld	hl,#_newdir
+   08E7 77                 2084 	ld	(hl),a
+                           2085 ;Snek.c:183: move_sprite(i,newx,newy);
+   08E8 21r2Ar00           2086 	ld	hl,#_newy
+   08EB 56                 2087 	ld	d,(hl)
+   08EC 21r28r00           2088 	ld	hl,#_newx
+   08EF 46                 2089 	ld	b,(hl)
+   08F0 D5                 2090 	push	de
+   08F1 33                 2091 	inc	sp
+   08F2 C5                 2092 	push	bc
+   08F3 33                 2093 	inc	sp
+   08F4 F8 03              2094 	ldhl	sp,#3
+   08F6 7E                 2095 	ld	a,(hl)
+   08F7 F5                 2096 	push	af
+   08F8 33                 2097 	inc	sp
+   08F9 CDr00r00           2098 	call	_move_sprite
+   08FC E8 03              2099 	add	sp, #3
+                           2100 ;Snek.c:184: pastx = S[i].xpos ;
+   08FE 21r27r00           2101 	ld	hl,#_i + 1
+   0901 2B                 2102 	dec	hl
+   0902 4E                 2103 	ld	c,(hl)
+   0903 23                 2104 	inc	hl
+   0904 46                 2105 	ld	b,(hl)
+   0905 69                 2106 	ld	l, c
+   0906 60                 2107 	ld	h, b
+   0907 29                 2108 	add	hl, hl
+   0908 29                 2109 	add	hl, hl
+   0909 09                 2110 	add	hl, bc
+   090A 4D                 2111 	ld	c,l
+   090B 44                 2112 	ld	b,h
+   090C 21r32r00           2113 	ld	hl,#_S
+   090F 09                 2114 	add	hl,bc
+   0910 4D                 2115 	ld	c,l
+   0911 44                 2116 	ld	b,h
+   0912 59                 2117 	ld	e, c
+   0913 50                 2118 	ld	d, b
+   0914 1A                 2119 	ld	a,(de)
+   0915 21r2Dr00           2120 	ld	hl,#_pastx
+   0918 22                 2121 	ld	(hl+),a
+   0919 13                 2122 	inc	de
+   091A 1A                 2123 	ld	a,(de)
+   091B 77                 2124 	ld	(hl),a
+                           2125 ;Snek.c:185: pasty = S[i].ypos;
+   091C 21 02 00           2126 	ld	hl,#0x0002
+   091F 09                 2127 	add	hl,bc
+   0920 7D                 2128 	ld	a,l
+   0921 54                 2129 	ld	d,h
+   0922 F8 03              2130 	ldhl	sp,#3
+   0924 22                 2131 	ld	(hl+),a
+   0925 72                 2132 	ld	(hl),d
+   0926 2B                 2133 	dec	hl
+   0927 5E                 2134 	ld	e,(hl)
+   0928 23                 2135 	inc	hl
+   0929 56                 2136 	ld	d,(hl)
+   092A 1A                 2137 	ld	a,(de)
+   092B 21r2Fr00           2138 	ld	hl,#_pasty
+   092E 22                 2139 	ld	(hl+),a
+   092F 13                 2140 	inc	de
+   0930 1A                 2141 	ld	a,(de)
+   0931 77                 2142 	ld	(hl),a
+                           2143 ;Snek.c:186: pastdir = S[i].dir;
+   0932 21 04 00           2144 	ld	hl,#0x0004
+   0935 09                 2145 	add	hl,bc
+   0936 7D                 2146 	ld	a,l
+   0937 54                 2147 	ld	d,h
+   0938 F8 03              2148 	ldhl	sp,#3
+   093A 22                 2149 	ld	(hl+),a
+   093B 72                 2150 	ld	(hl),d
+   093C 2B                 2151 	dec	hl
+   093D 5E                 2152 	ld	e,(hl)
+   093E 23                 2153 	inc	hl
+   093F 56                 2154 	ld	d,(hl)
+   0940 1A                 2155 	ld	a,(de)
+   0941 21r31r00           2156 	ld	hl,#_pastdir
+   0944 77                 2157 	ld	(hl),a
+                           2158 ;Snek.c:188: S[i].xpos = newx;
+   0945 21r28r00           2159 	ld	hl,#_newx
+   0948 7E                 2160 	ld	a,(hl)
+   0949 02                 2161 	ld	(bc),a
+   094A 03                 2162 	inc	bc
+   094B 23                 2163 	inc	hl
+   094C 7E                 2164 	ld	a,(hl)
+   094D 02                 2165 	ld	(bc),a
+                           2166 ;Snek.c:189: S[i].ypos = newy;
+   094E 21r27r00           2167 	ld	hl,#_i + 1
+   0951 2B                 2168 	dec	hl
+   0952 4E                 2169 	ld	c,(hl)
+   0953 23                 2170 	inc	hl
+   0954 46                 2171 	ld	b,(hl)
+   0955 69                 2172 	ld	l, c
+   0956 60                 2173 	ld	h, b
+   0957 29                 2174 	add	hl, hl
+   0958 29                 2175 	add	hl, hl
+   0959 09                 2176 	add	hl, bc
+   095A 4D                 2177 	ld	c,l
+   095B 44                 2178 	ld	b,h
+   095C 21r32r00           2179 	ld	hl,#_S
+   095F 09                 2180 	add	hl,bc
+   0960 4D                 2181 	ld	c,l
+   0961 44                 2182 	ld	b,h
+   0962 03                 2183 	inc	bc
+   0963 03                 2184 	inc	bc
+   0964 21r2Ar00           2185 	ld	hl,#_newy
+   0967 7E                 2186 	ld	a,(hl)
+   0968 02                 2187 	ld	(bc),a
+   0969 03                 2188 	inc	bc
+   096A 23                 2189 	inc	hl
+   096B 7E                 2190 	ld	a,(hl)
+   096C 02                 2191 	ld	(bc),a
+                           2192 ;Snek.c:190: S[i].dir = newdir;
+   096D 21r27r00           2193 	ld	hl,#_i + 1
+   0970 2B                 2194 	dec	hl
+   0971 4E                 2195 	ld	c,(hl)
+   0972 23                 2196 	inc	hl
+   0973 46                 2197 	ld	b,(hl)
+   0974 69                 2198 	ld	l, c
+   0975 60                 2199 	ld	h, b
+   0976 29                 2200 	add	hl, hl
+   0977 29                 2201 	add	hl, hl
+   0978 09                 2202 	add	hl, bc
+   0979 4D                 2203 	ld	c,l
+   097A 44                 2204 	ld	b,h
+   097B 21r32r00           2205 	ld	hl,#_S
+   097E 09                 2206 	add	hl,bc
+   097F 4D                 2207 	ld	c,l
+   0980 44                 2208 	ld	b,h
+   0981 03                 2209 	inc	bc
+   0982 03                 2210 	inc	bc
+   0983 03                 2211 	inc	bc
+   0984 03                 2212 	inc	bc
+   0985 21r2Cr00           2213 	ld	hl,#_newdir
+   0988 7E                 2214 	ld	a,(hl)
+   0989 02                 2215 	ld	(bc),a
+   098A C3r4Dr0A           2216 	jp	00130$
+   098D                    2217 00113$:
+                           2218 ;Snek.c:194: newx = pastx ;
+   098D 21r2Dr00           2219 	ld	hl,#_pastx
+   0990 2A                 2220 	ld	a,(hl+)
+   0991 5E                 2221 	ld	e, (hl)
+   0992 21r28r00           2222 	ld	hl,#_newx
+   0995 22                 2223 	ld	(hl+),a
+   0996 73                 2224 	ld	(hl),e
+                           2225 ;Snek.c:195: newy = pasty;
+   0997 21r2Fr00           2226 	ld	hl,#_pasty
+   099A 2A                 2227 	ld	a,(hl+)
+   099B 5E                 2228 	ld	e, (hl)
+   099C 21r2Ar00           2229 	ld	hl,#_newy
+   099F 22                 2230 	ld	(hl+),a
+   09A0 73                 2231 	ld	(hl),e
+                           2232 ;Snek.c:196: newdir = pastdir;
+   09A1 E5                 2233 	push	hl
+   09A2 21r31r00           2234 	ld	hl,#_pastdir
+   09A5 7E                 2235 	ld	a,(hl)
+   09A6 21r2Cr00           2236 	ld	hl,#_newdir
+   09A9 77                 2237 	ld	(hl),a
+   09AA E1                 2238 	pop	hl
+                           2239 ;Snek.c:197: move_sprite(i,newx,newy);
+   09AB 21r2Ar00           2240 	ld	hl,#_newy
+   09AE 56                 2241 	ld	d,(hl)
+   09AF 21r28r00           2242 	ld	hl,#_newx
+   09B2 46                 2243 	ld	b,(hl)
+   09B3 D5                 2244 	push	de
+   09B4 33                 2245 	inc	sp
+   09B5 C5                 2246 	push	bc
+   09B6 33                 2247 	inc	sp
+   09B7 F8 03              2248 	ldhl	sp,#3
+   09B9 7E                 2249 	ld	a,(hl)
+   09BA F5                 2250 	push	af
+   09BB 33                 2251 	inc	sp
+   09BC CDr00r00           2252 	call	_move_sprite
+   09BF E8 03              2253 	add	sp, #3
+                           2254 ;Snek.c:198: pastx = S[i].xpos ;
+   09C1 21r27r00           2255 	ld	hl,#_i + 1
+   09C4 2B                 2256 	dec	hl
+   09C5 4E                 2257 	ld	c,(hl)
+   09C6 23                 2258 	inc	hl
+   09C7 46                 2259 	ld	b,(hl)
+   09C8 69                 2260 	ld	l, c
+   09C9 60                 2261 	ld	h, b
+   09CA 29                 2262 	add	hl, hl
+   09CB 29                 2263 	add	hl, hl
+   09CC 09                 2264 	add	hl, bc
+   09CD 4D                 2265 	ld	c,l
+   09CE 44                 2266 	ld	b,h
+   09CF 21r32r00           2267 	ld	hl,#_S
+   09D2 09                 2268 	add	hl,bc
+   09D3 4D                 2269 	ld	c,l
+   09D4 44                 2270 	ld	b,h
+   09D5 59                 2271 	ld	e, c
+   09D6 50                 2272 	ld	d, b
+   09D7 1A                 2273 	ld	a,(de)
+   09D8 21r2Dr00           2274 	ld	hl,#_pastx
+   09DB 22                 2275 	ld	(hl+),a
+   09DC 13                 2276 	inc	de
+   09DD 1A                 2277 	ld	a,(de)
+   09DE 77                 2278 	ld	(hl),a
+                           2279 ;Snek.c:199: pasty = S[i].ypos;
+   09DF 21 02 00           2280 	ld	hl,#0x0002
+   09E2 09                 2281 	add	hl,bc
+   09E3 7D                 2282 	ld	a,l
+   09E4 54                 2283 	ld	d,h
+   09E5 F8 01              2284 	ldhl	sp,#1
+   09E7 22                 2285 	ld	(hl+),a
+   09E8 72                 2286 	ld	(hl),d
+   09E9 2B                 2287 	dec	hl
+   09EA 5E                 2288 	ld	e,(hl)
+   09EB 23                 2289 	inc	hl
+   09EC 56                 2290 	ld	d,(hl)
+   09ED 1A                 2291 	ld	a,(de)
+   09EE 21r2Fr00           2292 	ld	hl,#_pasty
+   09F1 22                 2293 	ld	(hl+),a
+   09F2 13                 2294 	inc	de
+   09F3 1A                 2295 	ld	a,(de)
+   09F4 77                 2296 	ld	(hl),a
+                           2297 ;Snek.c:200: pastdir = S[i].dir;
+   09F5 21 04 00           2298 	ld	hl,#0x0004
+   09F8 09                 2299 	add	hl,bc
+   09F9 7D                 2300 	ld	a,l
+   09FA 54                 2301 	ld	d,h
+   09FB F8 01              2302 	ldhl	sp,#1
+   09FD 22                 2303 	ld	(hl+),a
+   09FE 72                 2304 	ld	(hl),d
+   09FF 2B                 2305 	dec	hl
+   0A00 5E                 2306 	ld	e,(hl)
+   0A01 23                 2307 	inc	hl
+   0A02 56                 2308 	ld	d,(hl)
+   0A03 1A                 2309 	ld	a,(de)
+   0A04 21r31r00           2310 	ld	hl,#_pastdir
+   0A07 77                 2311 	ld	(hl),a
+                           2312 ;Snek.c:201: S[i].xpos = newx;
+   0A08 21r28r00           2313 	ld	hl,#_newx
+   0A0B 7E                 2314 	ld	a,(hl)
+   0A0C 02                 2315 	ld	(bc),a
+   0A0D 03                 2316 	inc	bc
+   0A0E 23                 2317 	inc	hl
+   0A0F 7E                 2318 	ld	a,(hl)
+   0A10 02                 2319 	ld	(bc),a
+                           2320 ;Snek.c:202: S[i].ypos = newy;
+   0A11 21r27r00           2321 	ld	hl,#_i + 1
+   0A14 2B                 2322 	dec	hl
+   0A15 4E                 2323 	ld	c,(hl)
+   0A16 23                 2324 	inc	hl
+   0A17 46                 2325 	ld	b,(hl)
+   0A18 69                 2326 	ld	l, c
+   0A19 60                 2327 	ld	h, b
+   0A1A 29                 2328 	add	hl, hl
+   0A1B 29                 2329 	add	hl, hl
+   0A1C 09                 2330 	add	hl, bc
+   0A1D 4D                 2331 	ld	c,l
+   0A1E 44                 2332 	ld	b,h
+   0A1F 21r32r00           2333 	ld	hl,#_S
+   0A22 09                 2334 	add	hl,bc
+   0A23 4D                 2335 	ld	c,l
+   0A24 44                 2336 	ld	b,h
+   0A25 03                 2337 	inc	bc
+   0A26 03                 2338 	inc	bc
+   0A27 21r2Ar00           2339 	ld	hl,#_newy
+   0A2A 7E                 2340 	ld	a,(hl)
+   0A2B 02                 2341 	ld	(bc),a
+   0A2C 03                 2342 	inc	bc
+   0A2D 23                 2343 	inc	hl
+   0A2E 7E                 2344 	ld	a,(hl)
+   0A2F 02                 2345 	ld	(bc),a
+                           2346 ;Snek.c:203: S[i].dir = newdir;
+   0A30 21r27r00           2347 	ld	hl,#_i + 1
+   0A33 2B                 2348 	dec	hl
+   0A34 4E                 2349 	ld	c,(hl)
+   0A35 23                 2350 	inc	hl
+   0A36 46                 2351 	ld	b,(hl)
+   0A37 69                 2352 	ld	l, c
+   0A38 60                 2353 	ld	h, b
+   0A39 29                 2354 	add	hl, hl
+   0A3A 29                 2355 	add	hl, hl
+   0A3B 09                 2356 	add	hl, bc
+   0A3C 4D                 2357 	ld	c,l
+   0A3D 44                 2358 	ld	b,h
+   0A3E 21r32r00           2359 	ld	hl,#_S
+   0A41 09                 2360 	add	hl,bc
+   0A42 4D                 2361 	ld	c,l
+   0A43 44                 2362 	ld	b,h
+   0A44 03                 2363 	inc	bc
+   0A45 03                 2364 	inc	bc
+   0A46 03                 2365 	inc	bc
+   0A47 03                 2366 	inc	bc
+   0A48 21r2Cr00           2367 	ld	hl,#_newdir
+   0A4B 7E                 2368 	ld	a,(hl)
+   0A4C 02                 2369 	ld	(bc),a
+   0A4D                    2370 00130$:
+                           2371 ;Snek.c:177: for(i = 0; i != size; i++)
+   0A4D 21r26r00           2372 	ld	hl,#_i
+   0A50 34                 2373 	inc	(hl)
+   0A51 C2r78r08           2374 	jp	NZ,00129$
+   0A54 23                 2375 	inc	hl
+   0A55 34                 2376 	inc	(hl)
+   0A56 C3r78r08           2377 	jp	00129$
+   0A59                    2378 00115$:
+                           2379 ;Snek.c:206: delay(100);
+   0A59 21 64 00           2380 	ld	hl,#0x0064
+   0A5C E5                 2381 	push	hl
+   0A5D CDr00r00           2382 	call	_delay
+   0A60 E8 02              2383 	add	sp, #2
+                           2384 ;Snek.c:208: break ;
+   0A62 C3r56r0C           2385 	jp	00134$
+                           2386 ;Snek.c:210: case 'd':
+   0A65                    2387 00116$:
+                           2388 ;Snek.c:212: for(i = 0;i != size; i++)
+   0A65 21r26r00           2389 	ld	hl,#_i
+   0A68 36 00              2390 	ld	(hl),#0x00
+   0A6A 23                 2391 	inc	hl
+   0A6B 36 00              2392 	ld	(hl),#0x00
+   0A6D                    2393 00132$:
+   0A6D 21r26r00           2394 	ld	hl,#_i
+   0A70 7E                 2395 	ld	a,(hl)
+   0A71 21r20r00           2396 	ld	hl,#_size
+   0A74 96                 2397 	sub	a, (hl)
+   0A75 20 0B              2398 	jr	NZ,00210$
+   0A77 21r27r00           2399 	ld	hl,#_i + 1
+   0A7A 7E                 2400 	ld	a,(hl)
+   0A7B 21r21r00           2401 	ld	hl,#_size + 1
+   0A7E 96                 2402 	sub	a, (hl)
+   0A7F CAr4Dr0C           2403 	jp	Z,00120$
+   0A82                    2404 00210$:
+                           2405 ;Snek.c:115: move_sprite(i,newx,newy);
+   0A82 E5                 2406 	push	hl
+   0A83 21r26r00           2407 	ld	hl,#_i
+   0A86 7E                 2408 	ld	a,(hl)
+   0A87 F8 03              2409 	ldhl	sp,#3
+   0A89 77                 2410 	ld	(hl),a
+   0A8A E1                 2411 	pop	hl
+                           2412 ;Snek.c:214: if(i == 0){
+   0A8B 21r27r00           2413 	ld	hl,#_i + 1
+   0A8E 3A                 2414 	ld	a,(hl-)
+   0A8F B6                 2415 	or	a,(hl)
+   0A90 C2r81r0B           2416 	jp	NZ,00118$
+                           2417 ;Snek.c:215: newx = S[i].xpos;
+   0A93 4E                 2418 	ld	c,(hl)
+   0A94 23                 2419 	inc	hl
+   0A95 46                 2420 	ld	b,(hl)
+   0A96 69                 2421 	ld	l, c
+   0A97 60                 2422 	ld	h, b
+   0A98 29                 2423 	add	hl, hl
+   0A99 29                 2424 	add	hl, hl
+   0A9A 09                 2425 	add	hl, bc
+   0A9B 4D                 2426 	ld	c,l
+   0A9C 44                 2427 	ld	b,h
+   0A9D 21r32r00           2428 	ld	hl,#_S
+   0AA0 09                 2429 	add	hl,bc
+   0AA1 7D                 2430 	ld	a,l
+   0AA2 54                 2431 	ld	d,h
+   0AA3 F8 03              2432 	ldhl	sp,#3
+   0AA5 22                 2433 	ld	(hl+),a
+   0AA6 72                 2434 	ld	(hl),d
+   0AA7 2B                 2435 	dec	hl
+   0AA8 5E                 2436 	ld	e,(hl)
+   0AA9 23                 2437 	inc	hl
+   0AAA 56                 2438 	ld	d,(hl)
+   0AAB 1A                 2439 	ld	a,(de)
+   0AAC 21r28r00           2440 	ld	hl,#_newx
+   0AAF 22                 2441 	ld	(hl+),a
+   0AB0 13                 2442 	inc	de
+   0AB1 1A                 2443 	ld	a,(de)
+   0AB2 77                 2444 	ld	(hl),a
+                           2445 ;Snek.c:216: newy = S[i].ypos + 8;
+   0AB3 F8 03              2446 	ldhl	sp,#(4 - 1)
+   0AB5 4E                 2447 	ld	c,(hl)
+   0AB6 23                 2448 	inc	hl
+   0AB7 46                 2449 	ld	b,(hl)
+   0AB8 03                 2450 	inc	bc
+   0AB9 03                 2451 	inc	bc
+   0ABA 59                 2452 	ld	e, c
+   0ABB 50                 2453 	ld	d, b
+   0ABC 1A                 2454 	ld	a,(de)
+   0ABD 4F                 2455 	ld	c,a
+   0ABE 13                 2456 	inc	de
+   0ABF 1A                 2457 	ld	a,(de)
+   0AC0 47                 2458 	ld	b,a
+   0AC1 21 08 00           2459 	ld	hl,#0x0008
+   0AC4 09                 2460 	add	hl,bc
+   0AC5 7D                 2461 	ld	a,l
+   0AC6 54                 2462 	ld	d,h
+   0AC7 21r2Ar00           2463 	ld	hl,#_newy
+   0ACA 22                 2464 	ld	(hl+),a
+   0ACB 72                 2465 	ld	(hl),d
+                           2466 ;Snek.c:217: newdir = S[i].dir;
+   0ACC F8 03              2467 	ldhl	sp,#(4 - 1)
+   0ACE 5E                 2468 	ld	e,(hl)
+   0ACF 23                 2469 	inc	hl
+   0AD0 56                 2470 	ld	d,(hl)
+   0AD1 21 04 00           2471 	ld	hl,#0x0004
+   0AD4 19                 2472 	add	hl,de
+   0AD5 4D                 2473 	ld	c,l
+   0AD6 44                 2474 	ld	b,h
+   0AD7 0A                 2475 	ld	a,(bc)
+   0AD8 21r2Cr00           2476 	ld	hl,#_newdir
+   0ADB 77                 2477 	ld	(hl),a
+                           2478 ;Snek.c:218: move_sprite(i,newx,newy);
+   0ADC 21r2Ar00           2479 	ld	hl,#_newy
+   0ADF 46                 2480 	ld	b,(hl)
+   0AE0 21r28r00           2481 	ld	hl,#_newx
+   0AE3 56                 2482 	ld	d,(hl)
+   0AE4 C5                 2483 	push	bc
+   0AE5 33                 2484 	inc	sp
+   0AE6 D5                 2485 	push	de
+   0AE7 33                 2486 	inc	sp
+   0AE8 F8 03              2487 	ldhl	sp,#3
+   0AEA 7E                 2488 	ld	a,(hl)
+   0AEB F5                 2489 	push	af
+   0AEC 33                 2490 	inc	sp
+   0AED CDr00r00           2491 	call	_move_sprite
+   0AF0 E8 03              2492 	add	sp, #3
+                           2493 ;Snek.c:219: pastx = S[i].xpos ;
+   0AF2 21r27r00           2494 	ld	hl,#_i + 1
+   0AF5 2B                 2495 	dec	hl
+   0AF6 4E                 2496 	ld	c,(hl)
+   0AF7 23                 2497 	inc	hl
+   0AF8 46                 2498 	ld	b,(hl)
+   0AF9 69                 2499 	ld	l, c
+   0AFA 60                 2500 	ld	h, b
+   0AFB 29                 2501 	add	hl, hl
+   0AFC 29                 2502 	add	hl, hl
+   0AFD 09                 2503 	add	hl, bc
+   0AFE 4D                 2504 	ld	c,l
+   0AFF 44                 2505 	ld	b,h
+   0B00 21r32r00           2506 	ld	hl,#_S
+   0B03 09                 2507 	add	hl,bc
+   0B04 4D                 2508 	ld	c,l
+   0B05 44                 2509 	ld	b,h
+   0B06 59                 2510 	ld	e, c
+   0B07 50                 2511 	ld	d, b
+   0B08 1A                 2512 	ld	a,(de)
+   0B09 21r2Dr00           2513 	ld	hl,#_pastx
+   0B0C 22                 2514 	ld	(hl+),a
+   0B0D 13                 2515 	inc	de
+   0B0E 1A                 2516 	ld	a,(de)
+   0B0F 77                 2517 	ld	(hl),a
+                           2518 ;Snek.c:220: pasty = S[i].ypos;
+   0B10 21 02 00           2519 	ld	hl,#0x0002
+   0B13 09                 2520 	add	hl,bc
+   0B14 7D                 2521 	ld	a,l
+   0B15 54                 2522 	ld	d,h
+   0B16 F8 03              2523 	ldhl	sp,#3
+   0B18 22                 2524 	ld	(hl+),a
+   0B19 72                 2525 	ld	(hl),d
+   0B1A 2B                 2526 	dec	hl
+   0B1B 5E                 2527 	ld	e,(hl)
+   0B1C 23                 2528 	inc	hl
+   0B1D 56                 2529 	ld	d,(hl)
+   0B1E 1A                 2530 	ld	a,(de)
+   0B1F 21r2Fr00           2531 	ld	hl,#_pasty
+   0B22 22                 2532 	ld	(hl+),a
+   0B23 13                 2533 	inc	de
+   0B24 1A                 2534 	ld	a,(de)
+   0B25 77                 2535 	ld	(hl),a
+                           2536 ;Snek.c:221: pastdir = S[i].dir;
+   0B26 21 04 00           2537 	ld	hl,#0x0004
+   0B29 09                 2538 	add	hl,bc
+   0B2A 7D                 2539 	ld	a,l
+   0B2B 54                 2540 	ld	d,h
+   0B2C F8 03              2541 	ldhl	sp,#3
+   0B2E 22                 2542 	ld	(hl+),a
+   0B2F 72                 2543 	ld	(hl),d
+   0B30 2B                 2544 	dec	hl
+   0B31 5E                 2545 	ld	e,(hl)
+   0B32 23                 2546 	inc	hl
+   0B33 56                 2547 	ld	d,(hl)
+   0B34 1A                 2548 	ld	a,(de)
+   0B35 21r31r00           2549 	ld	hl,#_pastdir
+   0B38 77                 2550 	ld	(hl),a
+                           2551 ;Snek.c:223: S[i].xpos = newx;
+   0B39 21r28r00           2552 	ld	hl,#_newx
+   0B3C 7E                 2553 	ld	a,(hl)
+   0B3D 02                 2554 	ld	(bc),a
+   0B3E 03                 2555 	inc	bc
+   0B3F 23                 2556 	inc	hl
+   0B40 7E                 2557 	ld	a,(hl)
+   0B41 02                 2558 	ld	(bc),a
+                           2559 ;Snek.c:224: S[i].ypos = newy;
+   0B42 21r27r00           2560 	ld	hl,#_i + 1
+   0B45 2B                 2561 	dec	hl
+   0B46 4E                 2562 	ld	c,(hl)
+   0B47 23                 2563 	inc	hl
+   0B48 46                 2564 	ld	b,(hl)
+   0B49 69                 2565 	ld	l, c
+   0B4A 60                 2566 	ld	h, b
+   0B4B 29                 2567 	add	hl, hl
+   0B4C 29                 2568 	add	hl, hl
+   0B4D 09                 2569 	add	hl, bc
+   0B4E 4D                 2570 	ld	c,l
+   0B4F 44                 2571 	ld	b,h
+   0B50 21r32r00           2572 	ld	hl,#_S
+   0B53 09                 2573 	add	hl,bc
+   0B54 4D                 2574 	ld	c,l
+   0B55 44                 2575 	ld	b,h
+   0B56 03                 2576 	inc	bc
+   0B57 03                 2577 	inc	bc
+   0B58 21r2Ar00           2578 	ld	hl,#_newy
+   0B5B 7E                 2579 	ld	a,(hl)
+   0B5C 02                 2580 	ld	(bc),a
+   0B5D 03                 2581 	inc	bc
+   0B5E 23                 2582 	inc	hl
+   0B5F 7E                 2583 	ld	a,(hl)
+   0B60 02                 2584 	ld	(bc),a
+                           2585 ;Snek.c:225: S[i].dir = newdir;
+   0B61 21r27r00           2586 	ld	hl,#_i + 1
+   0B64 2B                 2587 	dec	hl
+   0B65 4E                 2588 	ld	c,(hl)
+   0B66 23                 2589 	inc	hl
+   0B67 46                 2590 	ld	b,(hl)
+   0B68 69                 2591 	ld	l, c
+   0B69 60                 2592 	ld	h, b
+   0B6A 29                 2593 	add	hl, hl
+   0B6B 29                 2594 	add	hl, hl
+   0B6C 09                 2595 	add	hl, bc
+   0B6D 4D                 2596 	ld	c,l
+   0B6E 44                 2597 	ld	b,h
+   0B6F 21r32r00           2598 	ld	hl,#_S
+   0B72 09                 2599 	add	hl,bc
+   0B73 4D                 2600 	ld	c,l
+   0B74 44                 2601 	ld	b,h
+   0B75 03                 2602 	inc	bc
+   0B76 03                 2603 	inc	bc
+   0B77 03                 2604 	inc	bc
+   0B78 03                 2605 	inc	bc
+   0B79 21r2Cr00           2606 	ld	hl,#_newdir
+   0B7C 7E                 2607 	ld	a,(hl)
+   0B7D 02                 2608 	ld	(bc),a
+   0B7E C3r41r0C           2609 	jp	00133$
+   0B81                    2610 00118$:
+                           2611 ;Snek.c:229: newx = pastx ;
+   0B81 21r2Dr00           2612 	ld	hl,#_pastx
+   0B84 2A                 2613 	ld	a,(hl+)
+   0B85 5E                 2614 	ld	e, (hl)
+   0B86 21r28r00           2615 	ld	hl,#_newx
+   0B89 22                 2616 	ld	(hl+),a
+   0B8A 73                 2617 	ld	(hl),e
+                           2618 ;Snek.c:230: newy = pasty;
+   0B8B 21r2Fr00           2619 	ld	hl,#_pasty
+   0B8E 2A                 2620 	ld	a,(hl+)
+   0B8F 5E                 2621 	ld	e, (hl)
+   0B90 21r2Ar00           2622 	ld	hl,#_newy
+   0B93 22                 2623 	ld	(hl+),a
+   0B94 73                 2624 	ld	(hl),e
+                           2625 ;Snek.c:231: newdir = pastdir;
+   0B95 E5                 2626 	push	hl
+   0B96 21r31r00           2627 	ld	hl,#_pastdir
+   0B99 7E                 2628 	ld	a,(hl)
+   0B9A 21r2Cr00           2629 	ld	hl,#_newdir
+   0B9D 77                 2630 	ld	(hl),a
+   0B9E E1                 2631 	pop	hl
+                           2632 ;Snek.c:232: move_sprite(i,newx,newy);
+   0B9F 21r2Ar00           2633 	ld	hl,#_newy
+   0BA2 56                 2634 	ld	d,(hl)
+   0BA3 21r28r00           2635 	ld	hl,#_newx
+   0BA6 46                 2636 	ld	b,(hl)
+   0BA7 D5                 2637 	push	de
+   0BA8 33                 2638 	inc	sp
+   0BA9 C5                 2639 	push	bc
+   0BAA 33                 2640 	inc	sp
+   0BAB F8 03              2641 	ldhl	sp,#3
+   0BAD 7E                 2642 	ld	a,(hl)
+   0BAE F5                 2643 	push	af
+   0BAF 33                 2644 	inc	sp
+   0BB0 CDr00r00           2645 	call	_move_sprite
+   0BB3 E8 03              2646 	add	sp, #3
+                           2647 ;Snek.c:233: pastx = S[i].xpos ;
+   0BB5 21r27r00           2648 	ld	hl,#_i + 1
+   0BB8 2B                 2649 	dec	hl
+   0BB9 4E                 2650 	ld	c,(hl)
+   0BBA 23                 2651 	inc	hl
+   0BBB 46                 2652 	ld	b,(hl)
+   0BBC 69                 2653 	ld	l, c
+   0BBD 60                 2654 	ld	h, b
+   0BBE 29                 2655 	add	hl, hl
+   0BBF 29                 2656 	add	hl, hl
+   0BC0 09                 2657 	add	hl, bc
+   0BC1 4D                 2658 	ld	c,l
+   0BC2 44                 2659 	ld	b,h
+   0BC3 21r32r00           2660 	ld	hl,#_S
+   0BC6 09                 2661 	add	hl,bc
+   0BC7 4D                 2662 	ld	c,l
+   0BC8 44                 2663 	ld	b,h
+   0BC9 59                 2664 	ld	e, c
+   0BCA 50                 2665 	ld	d, b
+   0BCB 1A                 2666 	ld	a,(de)
+   0BCC 21r2Dr00           2667 	ld	hl,#_pastx
+   0BCF 22                 2668 	ld	(hl+),a
+   0BD0 13                 2669 	inc	de
+   0BD1 1A                 2670 	ld	a,(de)
+   0BD2 77                 2671 	ld	(hl),a
+                           2672 ;Snek.c:234: pasty = S[i].ypos;
+   0BD3 21 02 00           2673 	ld	hl,#0x0002
+   0BD6 09                 2674 	add	hl,bc
+   0BD7 7D                 2675 	ld	a,l
+   0BD8 54                 2676 	ld	d,h
+   0BD9 F8 01              2677 	ldhl	sp,#1
+   0BDB 22                 2678 	ld	(hl+),a
+   0BDC 72                 2679 	ld	(hl),d
+   0BDD 2B                 2680 	dec	hl
+   0BDE 5E                 2681 	ld	e,(hl)
+   0BDF 23                 2682 	inc	hl
+   0BE0 56                 2683 	ld	d,(hl)
+   0BE1 1A                 2684 	ld	a,(de)
+   0BE2 21r2Fr00           2685 	ld	hl,#_pasty
+   0BE5 22                 2686 	ld	(hl+),a
+   0BE6 13                 2687 	inc	de
+   0BE7 1A                 2688 	ld	a,(de)
+   0BE8 77                 2689 	ld	(hl),a
+                           2690 ;Snek.c:235: pastdir = S[i].dir;
+   0BE9 21 04 00           2691 	ld	hl,#0x0004
+   0BEC 09                 2692 	add	hl,bc
+   0BED 7D                 2693 	ld	a,l
+   0BEE 54                 2694 	ld	d,h
+   0BEF F8 01              2695 	ldhl	sp,#1
+   0BF1 22                 2696 	ld	(hl+),a
+   0BF2 72                 2697 	ld	(hl),d
+   0BF3 2B                 2698 	dec	hl
+   0BF4 5E                 2699 	ld	e,(hl)
+   0BF5 23                 2700 	inc	hl
+   0BF6 56                 2701 	ld	d,(hl)
+   0BF7 1A                 2702 	ld	a,(de)
+   0BF8 21r31r00           2703 	ld	hl,#_pastdir
+   0BFB 77                 2704 	ld	(hl),a
+                           2705 ;Snek.c:236: S[i].xpos = newx;
+   0BFC 21r28r00           2706 	ld	hl,#_newx
+   0BFF 7E                 2707 	ld	a,(hl)
+   0C00 02                 2708 	ld	(bc),a
+   0C01 03                 2709 	inc	bc
+   0C02 23                 2710 	inc	hl
+   0C03 7E                 2711 	ld	a,(hl)
+   0C04 02                 2712 	ld	(bc),a
+                           2713 ;Snek.c:237: S[i].ypos = newy;
+   0C05 21r27r00           2714 	ld	hl,#_i + 1
+   0C08 2B                 2715 	dec	hl
+   0C09 4E                 2716 	ld	c,(hl)
+   0C0A 23                 2717 	inc	hl
+   0C0B 46                 2718 	ld	b,(hl)
+   0C0C 69                 2719 	ld	l, c
+   0C0D 60                 2720 	ld	h, b
+   0C0E 29                 2721 	add	hl, hl
+   0C0F 29                 2722 	add	hl, hl
+   0C10 09                 2723 	add	hl, bc
+   0C11 4D                 2724 	ld	c,l
+   0C12 44                 2725 	ld	b,h
+   0C13 21r32r00           2726 	ld	hl,#_S
+   0C16 09                 2727 	add	hl,bc
+   0C17 4D                 2728 	ld	c,l
+   0C18 44                 2729 	ld	b,h
+   0C19 03                 2730 	inc	bc
+   0C1A 03                 2731 	inc	bc
+   0C1B 21r2Ar00           2732 	ld	hl,#_newy
+   0C1E 7E                 2733 	ld	a,(hl)
+   0C1F 02                 2734 	ld	(bc),a
+   0C20 03                 2735 	inc	bc
+   0C21 23                 2736 	inc	hl
+   0C22 7E                 2737 	ld	a,(hl)
+   0C23 02                 2738 	ld	(bc),a
+                           2739 ;Snek.c:238: S[i].dir = newdir;
+   0C24 21r27r00           2740 	ld	hl,#_i + 1
+   0C27 2B                 2741 	dec	hl
+   0C28 4E                 2742 	ld	c,(hl)
+   0C29 23                 2743 	inc	hl
+   0C2A 46                 2744 	ld	b,(hl)
+   0C2B 69                 2745 	ld	l, c
+   0C2C 60                 2746 	ld	h, b
+   0C2D 29                 2747 	add	hl, hl
+   0C2E 29                 2748 	add	hl, hl
+   0C2F 09                 2749 	add	hl, bc
+   0C30 4D                 2750 	ld	c,l
+   0C31 44                 2751 	ld	b,h
+   0C32 21r32r00           2752 	ld	hl,#_S
+   0C35 09                 2753 	add	hl,bc
+   0C36 4D                 2754 	ld	c,l
+   0C37 44                 2755 	ld	b,h
+   0C38 03                 2756 	inc	bc
+   0C39 03                 2757 	inc	bc
+   0C3A 03                 2758 	inc	bc
+   0C3B 03                 2759 	inc	bc
+   0C3C 21r2Cr00           2760 	ld	hl,#_newdir
+   0C3F 7E                 2761 	ld	a,(hl)
+   0C40 02                 2762 	ld	(bc),a
+   0C41                    2763 00133$:
+                           2764 ;Snek.c:212: for(i = 0;i != size; i++)
+   0C41 21r26r00           2765 	ld	hl,#_i
+   0C44 34                 2766 	inc	(hl)
+   0C45 C2r6Dr0A           2767 	jp	NZ,00132$
+   0C48 23                 2768 	inc	hl
+   0C49 34                 2769 	inc	(hl)
+   0C4A C3r6Dr0A           2770 	jp	00132$
+   0C4D                    2771 00120$:
+                           2772 ;Snek.c:241: delay(100);
+   0C4D 21 64 00           2773 	ld	hl,#0x0064
+   0C50 E5                 2774 	push	hl
+   0C51 CDr00r00           2775 	call	_delay
+   0C54 E8 02              2776 	add	sp, #2
+                           2777 ;Snek.c:245: }
+   0C56                    2778 00134$:
+   0C56 E8 05              2779 	add	sp, #5
+   0C58 C9                 2780 	ret
+                           2781 ;Snek.c:248: void change() {
+                           2782 ;	---------------------------------
+                           2783 ; Function change
+                           2784 ; ---------------------------------
+   0C59                    2785 _change::
+                           2786 ;Snek.c:249: switch (joypad()) {
+   0C59 CDr00r00           2787 	call	_joypad
+   0C5C 7B                 2788 	ld	a,e
+   0C5D 3D                 2789 	dec	a
+   0C5E 28 1D              2790 	jr	Z,00104$
+   0C60 7B                 2791 	ld	a,e
+   0C61 FE 02              2792 	cp	a,#0x02
+   0C63 28 0D              2793 	jr	Z,00101$
+   0C65 FE 04              2794 	cp	a,##0x04
+   0C67 28 1F              2795 	jr	Z,00107$
+   0C69 FE 08              2796 	cp	a,#0x08
+   0C6B 28 26              2797 	jr	Z,00110$
+   0C6D D6 10              2798 	sub	a, #0x10
+   0C6F 28 2D              2799 	jr	Z,00113$
+   0C71 C9                 2800 	ret
+                           2801 ;Snek.c:251: case J_LEFT:
+   0C72                    2802 00101$:
+                           2803 ;Snek.c:252: if(S[0].dir != 'r')
+   0C72 11r36r00           2804 	ld	de,#_S+4
+   0C75 1A                 2805 	ld	a,(de)
+   0C76 D6 72              2806 	sub	a, #0x72
+   0C78 C8                 2807 	ret	Z
+                           2808 ;Snek.c:254: S[0].dir = 'l';
+   0C79 3E 6C              2809 	ld	a,#0x6c
+   0C7B 12                 2810 	ld	(de),a
+                           2811 ;Snek.c:257: break;
+   0C7C C9                 2812 	ret
+                           2813 ;Snek.c:259: case J_RIGHT:
+   0C7D                    2814 00104$:
+                           2815 ;Snek.c:260: if(S[0].dir != 'l')
+   0C7D 11r36r00           2816 	ld	de,#_S+4
+   0C80 1A                 2817 	ld	a,(de)
+   0C81 D6 6C              2818 	sub	a, #0x6c
+   0C83 C8                 2819 	ret	Z
+                           2820 ;Snek.c:262: S[0].dir = 'r';
+   0C84 3E 72              2821 	ld	a,#0x72
+   0C86 12                 2822 	ld	(de),a
+                           2823 ;Snek.c:265: break;
+   0C87 C9                 2824 	ret
+                           2825 ;Snek.c:267: case J_UP:
+   0C88                    2826 00107$:
+                           2827 ;Snek.c:268: if(S[0].dir != 'd')
+   0C88 11r36r00           2828 	ld	de,#_S+4
+   0C8B 1A                 2829 	ld	a,(de)
+   0C8C D6 64              2830 	sub	a, #0x64
+   0C8E C8                 2831 	ret	Z
+                           2832 ;Snek.c:270: S[0].dir = 'u' ;
+   0C8F 3E 75              2833 	ld	a,#0x75
+   0C91 12                 2834 	ld	(de),a
+                           2835 ;Snek.c:273: break;
+   0C92 C9                 2836 	ret
+                           2837 ;Snek.c:275: case J_DOWN:
+   0C93                    2838 00110$:
+                           2839 ;Snek.c:276: if(S[0].dir != 'u')
+   0C93 11r36r00           2840 	ld	de,#_S+4
+   0C96 1A                 2841 	ld	a,(de)
+   0C97 D6 75              2842 	sub	a, #0x75
+   0C99 C8                 2843 	ret	Z
+                           2844 ;Snek.c:278: S[0].dir = 'd';
+   0C9A 3E 64              2845 	ld	a,#0x64
+   0C9C 12                 2846 	ld	(de),a
+                           2847 ;Snek.c:281: break;
+   0C9D C9                 2848 	ret
+                           2849 ;Snek.c:283: case J_A:
+   0C9E                    2850 00113$:
+                           2851 ;Snek.c:285: grow();
+                           2852 ;Snek.c:287: }
+   0C9E C3r00r00           2853 	jp	_grow
+                           2854 ;Snek.c:290: void main()
+                           2855 ;	---------------------------------
+                           2856 ; Function main
+                           2857 ; ---------------------------------
+   0CA1                    2858 _main::
+                           2859 ;Snek.c:292: SPRITES_8x8 ;
+   0CA1 11 40 FF           2860 	ld	de,#0xff40
+   0CA4 1A                 2861 	ld	a,(de)
+   0CA5 4F                 2862 	ld	c,a
+   0CA6 06 00              2863 	ld	b,#0x00
+   0CA8 CB 91              2864 	res	2, c
+   0CAA 06 00              2865 	ld	b,#0x00
+   0CAC 21 40 FF           2866 	ld	hl,#0xff40
+   0CAF 71                 2867 	ld	(hl),c
+                           2868 ;Snek.c:293: set_sprite_data(0,0,body) ;
+   0CB0 21r00r00           2869 	ld	hl,#_body
+   0CB3 E5                 2870 	push	hl
+   0CB4 21 00 00           2871 	ld	hl,#0x0000
+   0CB7 E5                 2872 	push	hl
+   0CB8 CDr00r00           2873 	call	_set_sprite_data
+   0CBB E8 04              2874 	add	sp, #4
+                           2875 ;Snek.c:294: set_sprite_tile(0,0);
+   0CBD 21 00 00           2876 	ld	hl,#0x0000
+   0CC0 E5                 2877 	push	hl
+   0CC1 CDr00r00           2878 	call	_set_sprite_tile
+   0CC4 E8 02              2879 	add	sp, #2
+                           2880 ;Snek.c:295: move_sprite(0,S[0].xpos,S[0].ypos);
+   0CC6 11r34r00           2881 	ld	de, #(_S + 0x0002) + 0
+   0CC9 1A                 2882 	ld	a,(de)
+   0CCA 4F                 2883 	ld	c,a
+   0CCB 13                 2884 	inc	de
+   0CCC 1A                 2885 	ld	a,(de)
+   0CCD 47                 2886 	ld	b,a
+   0CCE 79                 2887 	ld	a,c
+   0CCF 11r32r00           2888 	ld	de, #_S + 0
+   0CD2 F5                 2889 	push	af
+   0CD3 1A                 2890 	ld	a,(de)
+   0CD4 47                 2891 	ld	b,a
+   0CD5 13                 2892 	inc	de
+   0CD6 1A                 2893 	ld	a,(de)
+   0CD7 4F                 2894 	ld	c,a
+   0CD8 F1                 2895 	pop	af
+   0CD9 F5                 2896 	push	af
+   0CDA 33                 2897 	inc	sp
+   0CDB C5                 2898 	push	bc
+   0CDC 33                 2899 	inc	sp
+   0CDD AF                 2900 	xor	a, a
+   0CDE F5                 2901 	push	af
+   0CDF 33                 2902 	inc	sp
+   0CE0 CDr00r00           2903 	call	_move_sprite
+   0CE3 E8 03              2904 	add	sp, #3
+                           2905 ;Snek.c:296: SHOW_SPRITES;
+   0CE5 11 40 FF           2906 	ld	de,#0xff40
+   0CE8 1A                 2907 	ld	a,(de)
+   0CE9 4F                 2908 	ld	c,a
+   0CEA 06 00              2909 	ld	b,#0x00
+   0CEC 79                 2910 	ld	a,c
+   0CED CB CF              2911 	set	1, a
+   0CEF 4F                 2912 	ld	c,a
+   0CF0 21 40 FF           2913 	ld	hl,#0xff40
+   0CF3 71                 2914 	ld	(hl),c
+                           2915 ;Snek.c:298: while(1)
+   0CF4                    2916 00104$:
+                           2917 ;Snek.c:300: if(joypad())
+   0CF4 CDr00r00           2918 	call	_joypad
+   0CF7 7B                 2919 	ld	a,e
+   0CF8 B7                 2920 	or	a, a
+   0CF9 28 06              2921 	jr	Z,00102$
+                           2922 ;Snek.c:302: wait_vbl_done();
+   0CFB CDr00r00           2923 	call	_wait_vbl_done
+                           2924 ;Snek.c:303: change();
+   0CFE CDr59r0C           2925 	call	_change
+   0D01                    2926 00102$:
+                           2927 ;Snek.c:305: wait_vbl_done();
+   0D01 CDr00r00           2928 	call	_wait_vbl_done
+                           2929 ;Snek.c:306: update() ;
+   0D04 CDr6Cr04           2930 	call	_update
+   0D07 18 EB              2931 	jr	00104$
+   0D09 C9                 2932 	ret
+                           2933 	.area _CODE
+                           2934 	.area _CABS (ABS)

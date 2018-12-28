@@ -1,0 +1,13 @@
+-mjwx
+-i ./obj/Snek.ihx
+-b _CODE = 0x0200
+-b _DATA = 0xc0a0
+-k /home/serious-sneasel/Documents/GB/gbdk-n/bin/../lib
+-k /usr/local/bin/../share/sdcc/lib/gbz80
+-k /usr/local/share/sdcc/lib/gbz80
+-l gb.lib
+-l gbz80
+/home/serious-sneasel/Documents/GB/gbdk-n/bin/../lib/crt0.rel
+./obj/Snek.rel
+
+-e
