@@ -585,7 +585,7 @@ _grow::
 	push	hl
 	call	_delay
 	add	sp, #2
-;Snek.c:68: S[size].xpos = S[size-1].xpos + 8;
+;Snek.c:70: S[size].xpos = S[size-1].xpos + 8;
 	ld	hl,#_size + 1
 	dec	hl
 	ld	c,(hl)
@@ -637,7 +637,7 @@ _grow::
 	ld	(hl),c
 	inc	hl
 	ld	(hl),b
-;Snek.c:69: S[size].ypos = S[size-1].ypos;
+;Snek.c:71: S[size].ypos = S[size-1].ypos;
 	ld	hl,#_size + 1
 	dec	hl
 	ld	c,(hl)
@@ -691,7 +691,7 @@ _grow::
 	ld	(hl),c
 	inc	hl
 	ld	(hl),b
-;Snek.c:70: S[size].dir = S[size-1].dir;
+;Snek.c:72: S[size].dir = S[size-1].dir;
 	ld	hl,#_size + 1
 	dec	hl
 	ld	c,(hl)
@@ -740,11 +740,11 @@ _grow::
 	pop	hl
 	push	hl
 	ld	(hl),c
-;Snek.c:71: break ;
+;Snek.c:73: break ;
 	jp	00105$
-;Snek.c:74: case 'u':
+;Snek.c:76: case 'u':
 00103$:
-;Snek.c:75: addx = S[size-1].xpos ;
+;Snek.c:78: addx = S[size-1].xpos ;
 	ld	e, c
 	ld	d, b
 	ld	a,(de)
@@ -753,7 +753,7 @@ _grow::
 	inc	de
 	ld	a,(de)
 	ld	(hl),a
-;Snek.c:76: addy = S[size-1].ypos +8 ;
+;Snek.c:79: addy = S[size-1].ypos +8 ;
 	ldhl	sp,#(4 - 1)
 	ld	e,(hl)
 	inc	hl
@@ -770,7 +770,7 @@ _grow::
 	ld	hl,#_addy
 	ld	(hl+),a
 	ld	(hl),d
-;Snek.c:77: move_sprite(size,addx,addy);
+;Snek.c:80: move_sprite(size,addx,addy);
 	dec	hl
 	ld	d,(hl)
 	ld	hl,#_addx
@@ -785,12 +785,12 @@ _grow::
 	inc	sp
 	call	_move_sprite
 	add	sp, #3
-;Snek.c:78: delay(100);
+;Snek.c:81: delay(100);
 	ld	hl,#0x0064
 	push	hl
 	call	_delay
 	add	sp, #2
-;Snek.c:79: S[size].xpos = S[size-1].xpos;
+;Snek.c:84: S[size].xpos = S[size-1].xpos;
 	ld	hl,#_size + 1
 	dec	hl
 	ld	c,(hl)
@@ -838,7 +838,7 @@ _grow::
 	ld	(hl),c
 	inc	hl
 	ld	(hl),b
-;Snek.c:80: S[size].ypos = S[size-1].ypos + 8;
+;Snek.c:85: S[size].ypos = S[size-1].ypos + 8;
 	ld	hl,#_size + 1
 	dec	hl
 	ld	c,(hl)
@@ -896,7 +896,7 @@ _grow::
 	ld	(hl),c
 	inc	hl
 	ld	(hl),b
-;Snek.c:81: S[size].dir = S[size-1].dir;
+;Snek.c:86: S[size].dir = S[size-1].dir;
 	ld	hl,#_size + 1
 	dec	hl
 	ld	c,(hl)
@@ -945,11 +945,11 @@ _grow::
 	pop	hl
 	push	hl
 	ld	(hl),c
-;Snek.c:82: break ;
+;Snek.c:87: break ;
 	jp	00105$
-;Snek.c:85: case 'd':
+;Snek.c:90: case 'd':
 00104$:
-;Snek.c:86: addx = S[size-1].xpos ;
+;Snek.c:92: addx = S[size-1].xpos ;
 	ld	e, c
 	ld	d, b
 	ld	a,(de)
@@ -958,7 +958,7 @@ _grow::
 	inc	de
 	ld	a,(de)
 	ld	(hl),a
-;Snek.c:87: addy = S[size-1].ypos -8 ;
+;Snek.c:93: addy = S[size-1].ypos -8 ;
 	ldhl	sp,#(4 - 1)
 	ld	e,(hl)
 	inc	hl
@@ -975,7 +975,7 @@ _grow::
 	ld	a,b
 	adc	a,#0xff
 	inc	hl
-;Snek.c:88: move_sprite(size,addx,addy);
+;Snek.c:94: move_sprite(size,addx,addy);
 	ld	(hl-),a
 	ld	b,(hl)
 	ld	hl,#_addx
@@ -990,12 +990,12 @@ _grow::
 	inc	sp
 	call	_move_sprite
 	add	sp, #3
-;Snek.c:89: delay(100);
+;Snek.c:95: delay(100);
 	ld	hl,#0x0064
 	push	hl
 	call	_delay
 	add	sp, #2
-;Snek.c:90: S[size].xpos = S[size-1].xpos;
+;Snek.c:98: S[size].xpos = S[size-1].xpos;
 	ld	hl,#_size + 1
 	dec	hl
 	ld	c,(hl)
@@ -1047,7 +1047,7 @@ _grow::
 	ld	(hl),c
 	inc	hl
 	ld	(hl),b
-;Snek.c:91: S[size].ypos = S[size-1].ypos - 8;
+;Snek.c:99: S[size].ypos = S[size-1].ypos - 8;
 	ld	hl,#_size + 1
 	dec	hl
 	ld	c,(hl)
@@ -1110,7 +1110,7 @@ _grow::
 	ld	(hl),c
 	inc	hl
 	ld	(hl),b
-;Snek.c:92: S[size].dir = S[size-1].dir;
+;Snek.c:100: S[size].dir = S[size-1].dir;
 	ld	hl,#_size + 1
 	dec	hl
 	ld	c,(hl)
@@ -1163,9 +1163,9 @@ _grow::
 	ld	h,(hl)
 	ld	l,a
 	ld	(hl),c
-;Snek.c:94: }
+;Snek.c:102: }
 00105$:
-;Snek.c:96: SHOW_SPRITES ;
+;Snek.c:104: SHOW_SPRITES ;
 	ld	de,#0xff40
 	ld	a,(de)
 	ld	c,a
@@ -1175,7 +1175,7 @@ _grow::
 	ld	c,a
 	ld	hl,#0xff40
 	ld	(hl),c
-;Snek.c:97: size += 1 ;
+;Snek.c:106: size += 1 ;
 	ld	hl,#_size
 	inc	(hl)
 	jr	NZ,00128$
@@ -1184,13 +1184,13 @@ _grow::
 00128$:
 	add	sp, #5
 	ret
-;Snek.c:101: void update(){
+;Snek.c:111: void update(){
 ;	---------------------------------
 ; Function update
 ; ---------------------------------
 _update::
 	add	sp, #-5
-;Snek.c:103: switch(S[0].dir)
+;Snek.c:113: switch(S[0].dir)
 	ld	bc,#_S + 4
 	ld	a,(bc)
 	ld	c,a
@@ -1204,9 +1204,9 @@ _update::
 	sub	a, #0x75
 	jp	Z,00111$
 	jp	00134$
-;Snek.c:105: case 'l':
+;Snek.c:116: case 'l':
 00101$:
-;Snek.c:109: for(i = 0; i != size; i++)
+;Snek.c:118: for(i = 0; i != size; i++)
 	ld	hl,#_i
 	ld	(hl),#0x00
 	inc	hl
@@ -1223,19 +1223,19 @@ _update::
 	sub	a, (hl)
 	jp	Z,00105$
 00204$:
-;Snek.c:115: move_sprite(i,newx,newy);
+;Snek.c:126: move_sprite(i,newx,newy);
 	push	hl
 	ld	hl,#_i
 	ld	a,(hl)
 	ldhl	sp,#2
 	ld	(hl),a
 	pop	hl
-;Snek.c:111: if(i == 0){
+;Snek.c:121: if(i == 0){
 	ld	hl,#_i + 1
 	ld	a,(hl-)
 	or	a,(hl)
 	jp	NZ,00103$
-;Snek.c:112: newx = S[i].xpos - 8;
+;Snek.c:123: newx = S[i].xpos - 8;
 	ld	c,(hl)
 	inc	hl
 	ld	b,(hl)
@@ -1270,7 +1270,7 @@ _update::
 	adc	a,#0xff
 	inc	hl
 	ld	(hl),a
-;Snek.c:113: newy = S[i].ypos;
+;Snek.c:124: newy = S[i].ypos;
 	ldhl	sp,#(4 - 1)
 	ld	c,(hl)
 	inc	hl
@@ -1285,7 +1285,7 @@ _update::
 	inc	de
 	ld	a,(de)
 	ld	(hl),a
-;Snek.c:114: newdir = S[i].dir;
+;Snek.c:125: newdir = S[i].dir;
 	ldhl	sp,#(4 - 1)
 	ld	e,(hl)
 	inc	hl
@@ -1297,7 +1297,7 @@ _update::
 	ld	a,(bc)
 	ld	hl,#_newdir
 	ld	(hl),a
-;Snek.c:115: move_sprite(i,newx,newy);
+;Snek.c:126: move_sprite(i,newx,newy);
 	ld	hl,#_newy
 	ld	d,(hl)
 	ld	hl,#_newx
@@ -1312,7 +1312,7 @@ _update::
 	inc	sp
 	call	_move_sprite
 	add	sp, #3
-;Snek.c:116: pastx = S[i].xpos ;
+;Snek.c:129: pastx = S[i].xpos ;
 	ld	hl,#_i + 1
 	dec	hl
 	ld	c,(hl)
@@ -1337,7 +1337,7 @@ _update::
 	inc	de
 	ld	a,(de)
 	ld	(hl),a
-;Snek.c:117: pasty = S[i].ypos;
+;Snek.c:130: pasty = S[i].ypos;
 	ld	hl,#0x0002
 	add	hl,bc
 	ld	a,l
@@ -1355,7 +1355,7 @@ _update::
 	inc	de
 	ld	a,(de)
 	ld	(hl),a
-;Snek.c:118: pastdir = S[i].dir;
+;Snek.c:131: pastdir = S[i].dir;
 	ld	hl,#0x0004
 	add	hl,bc
 	ld	a,l
@@ -1370,7 +1370,7 @@ _update::
 	ld	a,(de)
 	ld	hl,#_pastdir
 	ld	(hl),a
-;Snek.c:120: S[i].xpos = newx;
+;Snek.c:134: S[i].xpos = newx;
 	ld	hl,#_newx
 	ld	a,(hl)
 	ld	(bc),a
@@ -1378,7 +1378,7 @@ _update::
 	inc	hl
 	ld	a,(hl)
 	ld	(bc),a
-;Snek.c:121: S[i].ypos = newy;
+;Snek.c:135: S[i].ypos = newy;
 	ld	hl,#_i + 1
 	dec	hl
 	ld	c,(hl)
@@ -1404,7 +1404,7 @@ _update::
 	inc	hl
 	ld	a,(hl)
 	ld	(bc),a
-;Snek.c:122: S[i].dir = newdir;
+;Snek.c:136: S[i].dir = newdir;
 	ld	hl,#_i + 1
 	dec	hl
 	ld	c,(hl)
@@ -1430,28 +1430,28 @@ _update::
 	ld	(bc),a
 	jp	00124$
 00103$:
-;Snek.c:126: newx = pastx ;
+;Snek.c:142: newx = pastx ;
 	ld	hl,#_pastx
 	ld	a,(hl+)
 	ld	e, (hl)
 	ld	hl,#_newx
 	ld	(hl+),a
 	ld	(hl),e
-;Snek.c:127: newy = pasty;
+;Snek.c:143: newy = pasty;
 	ld	hl,#_pasty
 	ld	a,(hl+)
 	ld	e, (hl)
 	ld	hl,#_newy
 	ld	(hl+),a
 	ld	(hl),e
-;Snek.c:128: newdir = pastdir;
+;Snek.c:144: newdir = pastdir;
 	push	hl
 	ld	hl,#_pastdir
 	ld	a,(hl)
 	ld	hl,#_newdir
 	ld	(hl),a
 	pop	hl
-;Snek.c:129: move_sprite(i,newx,newy);
+;Snek.c:145: move_sprite(i,newx,newy);
 	ld	hl,#_newy
 	ld	d,(hl)
 	ld	hl,#_newx
@@ -1466,7 +1466,7 @@ _update::
 	inc	sp
 	call	_move_sprite
 	add	sp, #3
-;Snek.c:130: pastx = S[i].xpos ;
+;Snek.c:148: pastx = S[i].xpos ;
 	ld	hl,#_i + 1
 	dec	hl
 	ld	c,(hl)
@@ -1491,7 +1491,7 @@ _update::
 	inc	de
 	ld	a,(de)
 	ld	(hl),a
-;Snek.c:131: pasty = S[i].ypos;
+;Snek.c:149: pasty = S[i].ypos;
 	ld	hl,#0x0002
 	add	hl,bc
 	ld	a,l
@@ -1509,7 +1509,7 @@ _update::
 	inc	de
 	ld	a,(de)
 	ld	(hl),a
-;Snek.c:132: pastdir = S[i].dir;
+;Snek.c:150: pastdir = S[i].dir;
 	ld	hl,#0x0004
 	add	hl,bc
 	ld	a,l
@@ -1524,7 +1524,7 @@ _update::
 	ld	a,(de)
 	ld	hl,#_pastdir
 	ld	(hl),a
-;Snek.c:133: S[i].xpos = newx;
+;Snek.c:153: S[i].xpos = newx;
 	ld	hl,#_newx
 	ld	a,(hl)
 	ld	(bc),a
@@ -1532,7 +1532,7 @@ _update::
 	inc	hl
 	ld	a,(hl)
 	ld	(bc),a
-;Snek.c:134: S[i].ypos = newy;
+;Snek.c:154: S[i].ypos = newy;
 	ld	hl,#_i + 1
 	dec	hl
 	ld	c,(hl)
@@ -1558,7 +1558,7 @@ _update::
 	inc	hl
 	ld	a,(hl)
 	ld	(bc),a
-;Snek.c:135: S[i].dir = newdir;
+;Snek.c:155: S[i].dir = newdir;
 	ld	hl,#_i + 1
 	dec	hl
 	ld	c,(hl)
@@ -1583,7 +1583,7 @@ _update::
 	ld	a,(hl)
 	ld	(bc),a
 00124$:
-;Snek.c:109: for(i = 0; i != size; i++)
+;Snek.c:118: for(i = 0; i != size; i++)
 	ld	hl,#_i
 	inc	(hl)
 	jp	NZ,00123$
@@ -1591,16 +1591,16 @@ _update::
 	inc	(hl)
 	jp	00123$
 00105$:
-;Snek.c:138: delay(100);
+;Snek.c:158: delay(100);
 	ld	hl,#0x0064
 	push	hl
 	call	_delay
 	add	sp, #2
-;Snek.c:139: break;
+;Snek.c:159: break;
 	jp	00134$
-;Snek.c:141: case 'r':
+;Snek.c:161: case 'r':
 00106$:
-;Snek.c:143: for(i = 0; i != size; i++)
+;Snek.c:163: for(i = 0; i != size; i++)
 	ld	hl,#_i
 	ld	(hl),#0x00
 	inc	hl
@@ -1617,19 +1617,19 @@ _update::
 	sub	a, (hl)
 	jp	Z,00110$
 00206$:
-;Snek.c:115: move_sprite(i,newx,newy);
+;Snek.c:126: move_sprite(i,newx,newy);
 	push	hl
 	ld	hl,#_i
 	ld	a,(hl)
 	ldhl	sp,#5
 	ld	(hl),a
 	pop	hl
-;Snek.c:145: if(i == 0){
+;Snek.c:166: if(i == 0){
 	ld	hl,#_i + 1
 	ld	a,(hl-)
 	or	a,(hl)
 	jp	NZ,00108$
-;Snek.c:146: newx = S[i].xpos + 8;
+;Snek.c:168: newx = S[i].xpos + 8;
 	ld	c,(hl)
 	inc	hl
 	ld	b,(hl)
@@ -1662,7 +1662,7 @@ _update::
 	ld	hl,#_newx
 	ld	(hl+),a
 	ld	(hl),d
-;Snek.c:147: newy = S[i].ypos;
+;Snek.c:169: newy = S[i].ypos;
 	ld	hl,#0x0002
 	add	hl,bc
 	ld	a,l
@@ -1680,7 +1680,7 @@ _update::
 	inc	de
 	ld	a,(de)
 	ld	(hl),a
-;Snek.c:148: newdir = S[i].dir;
+;Snek.c:170: newdir = S[i].dir;
 	inc	bc
 	inc	bc
 	inc	bc
@@ -1688,7 +1688,7 @@ _update::
 	ld	a,(bc)
 	ld	hl,#_newdir
 	ld	(hl),a
-;Snek.c:149: move_sprite(i,newx,newy);
+;Snek.c:171: move_sprite(i,newx,newy);
 	ld	hl,#_newy
 	ld	d,(hl)
 	ld	hl,#_newx
@@ -1703,7 +1703,7 @@ _update::
 	inc	sp
 	call	_move_sprite
 	add	sp, #3
-;Snek.c:150: pastx = S[i].xpos ;
+;Snek.c:174: pastx = S[i].xpos ;
 	ld	hl,#_i + 1
 	dec	hl
 	ld	c,(hl)
@@ -1728,7 +1728,7 @@ _update::
 	inc	de
 	ld	a,(de)
 	ld	(hl),a
-;Snek.c:151: pasty = S[i].ypos;
+;Snek.c:175: pasty = S[i].ypos;
 	ld	hl,#0x0002
 	add	hl,bc
 	ld	a,l
@@ -1746,7 +1746,7 @@ _update::
 	inc	de
 	ld	a,(de)
 	ld	(hl),a
-;Snek.c:152: pastdir = S[i].dir;
+;Snek.c:176: pastdir = S[i].dir;
 	ld	hl,#0x0004
 	add	hl,bc
 	ld	a,l
@@ -1761,7 +1761,7 @@ _update::
 	ld	a,(de)
 	ld	hl,#_pastdir
 	ld	(hl),a
-;Snek.c:154: S[i].xpos = newx;
+;Snek.c:179: S[i].xpos = newx;
 	ld	hl,#_newx
 	ld	a,(hl)
 	ld	(bc),a
@@ -1769,7 +1769,7 @@ _update::
 	inc	hl
 	ld	a,(hl)
 	ld	(bc),a
-;Snek.c:155: S[i].ypos = newy;
+;Snek.c:180: S[i].ypos = newy;
 	ld	hl,#_i + 1
 	dec	hl
 	ld	c,(hl)
@@ -1795,7 +1795,7 @@ _update::
 	inc	hl
 	ld	a,(hl)
 	ld	(bc),a
-;Snek.c:156: S[i].dir = newdir;
+;Snek.c:181: S[i].dir = newdir;
 	ld	hl,#_i + 1
 	dec	hl
 	ld	c,(hl)
@@ -1821,28 +1821,28 @@ _update::
 	ld	(bc),a
 	jp	00127$
 00108$:
-;Snek.c:160: newx = pastx ;
+;Snek.c:187: newx = pastx ;
 	ld	hl,#_pastx
 	ld	a,(hl+)
 	ld	e, (hl)
 	ld	hl,#_newx
 	ld	(hl+),a
 	ld	(hl),e
-;Snek.c:161: newy = pasty;
+;Snek.c:188: newy = pasty;
 	ld	hl,#_pasty
 	ld	a,(hl+)
 	ld	e, (hl)
 	ld	hl,#_newy
 	ld	(hl+),a
 	ld	(hl),e
-;Snek.c:162: newdir = pastdir;
+;Snek.c:189: newdir = pastdir;
 	push	hl
 	ld	hl,#_pastdir
 	ld	a,(hl)
 	ld	hl,#_newdir
 	ld	(hl),a
 	pop	hl
-;Snek.c:163: move_sprite(i,newx,newy);
+;Snek.c:190: move_sprite(i,newx,newy);
 	ld	hl,#_newy
 	ld	d,(hl)
 	ld	hl,#_newx
@@ -1857,7 +1857,7 @@ _update::
 	inc	sp
 	call	_move_sprite
 	add	sp, #3
-;Snek.c:164: pastx = S[i].xpos ;
+;Snek.c:193: pastx = S[i].xpos ;
 	ld	hl,#_i + 1
 	dec	hl
 	ld	c,(hl)
@@ -1882,7 +1882,7 @@ _update::
 	inc	de
 	ld	a,(de)
 	ld	(hl),a
-;Snek.c:165: pasty = S[i].ypos;
+;Snek.c:194: pasty = S[i].ypos;
 	ld	hl,#0x0002
 	add	hl,bc
 	ld	a,l
@@ -1900,7 +1900,7 @@ _update::
 	inc	de
 	ld	a,(de)
 	ld	(hl),a
-;Snek.c:166: pastdir = S[i].dir;
+;Snek.c:195: pastdir = S[i].dir;
 	ld	hl,#0x0004
 	add	hl,bc
 	ld	a,l
@@ -1915,7 +1915,7 @@ _update::
 	ld	a,(de)
 	ld	hl,#_pastdir
 	ld	(hl),a
-;Snek.c:167: S[i].xpos = newx;
+;Snek.c:198: S[i].xpos = newx;
 	ld	hl,#_newx
 	ld	a,(hl)
 	ld	(bc),a
@@ -1923,7 +1923,7 @@ _update::
 	inc	hl
 	ld	a,(hl)
 	ld	(bc),a
-;Snek.c:168: S[i].ypos = newy;
+;Snek.c:199: S[i].ypos = newy;
 	ld	hl,#_i + 1
 	dec	hl
 	ld	c,(hl)
@@ -1949,7 +1949,7 @@ _update::
 	inc	hl
 	ld	a,(hl)
 	ld	(bc),a
-;Snek.c:169: S[i].dir = newdir;
+;Snek.c:200: S[i].dir = newdir;
 	ld	hl,#_i + 1
 	dec	hl
 	ld	c,(hl)
@@ -1974,7 +1974,7 @@ _update::
 	ld	a,(hl)
 	ld	(bc),a
 00127$:
-;Snek.c:143: for(i = 0; i != size; i++)
+;Snek.c:163: for(i = 0; i != size; i++)
 	ld	hl,#_i
 	inc	(hl)
 	jp	NZ,00126$
@@ -1982,16 +1982,16 @@ _update::
 	inc	(hl)
 	jp	00126$
 00110$:
-;Snek.c:172: delay(100);
+;Snek.c:203: delay(100);
 	ld	hl,#0x0064
 	push	hl
 	call	_delay
 	add	sp, #2
-;Snek.c:173: break ;
+;Snek.c:204: break ;
 	jp	00134$
-;Snek.c:175: case 'u':
+;Snek.c:206: case 'u':
 00111$:
-;Snek.c:177: for(i = 0; i != size; i++)
+;Snek.c:208: for(i = 0; i != size; i++)
 	ld	hl,#_i
 	ld	(hl),#0x00
 	inc	hl
@@ -2008,19 +2008,19 @@ _update::
 	sub	a, (hl)
 	jp	Z,00115$
 00208$:
-;Snek.c:115: move_sprite(i,newx,newy);
+;Snek.c:126: move_sprite(i,newx,newy);
 	push	hl
 	ld	hl,#_i
 	ld	a,(hl)
 	ldhl	sp,#3
 	ld	(hl),a
 	pop	hl
-;Snek.c:179: if(i == 0){
+;Snek.c:211: if(i == 0){
 	ld	hl,#_i + 1
 	ld	a,(hl-)
 	or	a,(hl)
 	jp	NZ,00113$
-;Snek.c:180: newx = S[i].xpos;
+;Snek.c:213: newx = S[i].xpos;
 	ld	c,(hl)
 	inc	hl
 	ld	b,(hl)
@@ -2048,7 +2048,7 @@ _update::
 	inc	de
 	ld	a,(de)
 	ld	(hl),a
-;Snek.c:181: newy = S[i].ypos - 8;
+;Snek.c:214: newy = S[i].ypos - 8;
 	ldhl	sp,#(4 - 1)
 	ld	c,(hl)
 	inc	hl
@@ -2070,7 +2070,7 @@ _update::
 	adc	a,#0xff
 	inc	hl
 	ld	(hl),a
-;Snek.c:182: newdir = S[i].dir;
+;Snek.c:215: newdir = S[i].dir;
 	ldhl	sp,#(4 - 1)
 	ld	e,(hl)
 	inc	hl
@@ -2082,7 +2082,7 @@ _update::
 	ld	a,(bc)
 	ld	hl,#_newdir
 	ld	(hl),a
-;Snek.c:183: move_sprite(i,newx,newy);
+;Snek.c:216: move_sprite(i,newx,newy);
 	ld	hl,#_newy
 	ld	d,(hl)
 	ld	hl,#_newx
@@ -2090,399 +2090,6 @@ _update::
 	push	de
 	inc	sp
 	push	bc
-	inc	sp
-	ldhl	sp,#3
-	ld	a,(hl)
-	push	af
-	inc	sp
-	call	_move_sprite
-	add	sp, #3
-;Snek.c:184: pastx = S[i].xpos ;
-	ld	hl,#_i + 1
-	dec	hl
-	ld	c,(hl)
-	inc	hl
-	ld	b,(hl)
-	ld	l, c
-	ld	h, b
-	add	hl, hl
-	add	hl, hl
-	add	hl, bc
-	ld	c,l
-	ld	b,h
-	ld	hl,#_S
-	add	hl,bc
-	ld	c,l
-	ld	b,h
-	ld	e, c
-	ld	d, b
-	ld	a,(de)
-	ld	hl,#_pastx
-	ld	(hl+),a
-	inc	de
-	ld	a,(de)
-	ld	(hl),a
-;Snek.c:185: pasty = S[i].ypos;
-	ld	hl,#0x0002
-	add	hl,bc
-	ld	a,l
-	ld	d,h
-	ldhl	sp,#3
-	ld	(hl+),a
-	ld	(hl),d
-	dec	hl
-	ld	e,(hl)
-	inc	hl
-	ld	d,(hl)
-	ld	a,(de)
-	ld	hl,#_pasty
-	ld	(hl+),a
-	inc	de
-	ld	a,(de)
-	ld	(hl),a
-;Snek.c:186: pastdir = S[i].dir;
-	ld	hl,#0x0004
-	add	hl,bc
-	ld	a,l
-	ld	d,h
-	ldhl	sp,#3
-	ld	(hl+),a
-	ld	(hl),d
-	dec	hl
-	ld	e,(hl)
-	inc	hl
-	ld	d,(hl)
-	ld	a,(de)
-	ld	hl,#_pastdir
-	ld	(hl),a
-;Snek.c:188: S[i].xpos = newx;
-	ld	hl,#_newx
-	ld	a,(hl)
-	ld	(bc),a
-	inc	bc
-	inc	hl
-	ld	a,(hl)
-	ld	(bc),a
-;Snek.c:189: S[i].ypos = newy;
-	ld	hl,#_i + 1
-	dec	hl
-	ld	c,(hl)
-	inc	hl
-	ld	b,(hl)
-	ld	l, c
-	ld	h, b
-	add	hl, hl
-	add	hl, hl
-	add	hl, bc
-	ld	c,l
-	ld	b,h
-	ld	hl,#_S
-	add	hl,bc
-	ld	c,l
-	ld	b,h
-	inc	bc
-	inc	bc
-	ld	hl,#_newy
-	ld	a,(hl)
-	ld	(bc),a
-	inc	bc
-	inc	hl
-	ld	a,(hl)
-	ld	(bc),a
-;Snek.c:190: S[i].dir = newdir;
-	ld	hl,#_i + 1
-	dec	hl
-	ld	c,(hl)
-	inc	hl
-	ld	b,(hl)
-	ld	l, c
-	ld	h, b
-	add	hl, hl
-	add	hl, hl
-	add	hl, bc
-	ld	c,l
-	ld	b,h
-	ld	hl,#_S
-	add	hl,bc
-	ld	c,l
-	ld	b,h
-	inc	bc
-	inc	bc
-	inc	bc
-	inc	bc
-	ld	hl,#_newdir
-	ld	a,(hl)
-	ld	(bc),a
-	jp	00130$
-00113$:
-;Snek.c:194: newx = pastx ;
-	ld	hl,#_pastx
-	ld	a,(hl+)
-	ld	e, (hl)
-	ld	hl,#_newx
-	ld	(hl+),a
-	ld	(hl),e
-;Snek.c:195: newy = pasty;
-	ld	hl,#_pasty
-	ld	a,(hl+)
-	ld	e, (hl)
-	ld	hl,#_newy
-	ld	(hl+),a
-	ld	(hl),e
-;Snek.c:196: newdir = pastdir;
-	push	hl
-	ld	hl,#_pastdir
-	ld	a,(hl)
-	ld	hl,#_newdir
-	ld	(hl),a
-	pop	hl
-;Snek.c:197: move_sprite(i,newx,newy);
-	ld	hl,#_newy
-	ld	d,(hl)
-	ld	hl,#_newx
-	ld	b,(hl)
-	push	de
-	inc	sp
-	push	bc
-	inc	sp
-	ldhl	sp,#3
-	ld	a,(hl)
-	push	af
-	inc	sp
-	call	_move_sprite
-	add	sp, #3
-;Snek.c:198: pastx = S[i].xpos ;
-	ld	hl,#_i + 1
-	dec	hl
-	ld	c,(hl)
-	inc	hl
-	ld	b,(hl)
-	ld	l, c
-	ld	h, b
-	add	hl, hl
-	add	hl, hl
-	add	hl, bc
-	ld	c,l
-	ld	b,h
-	ld	hl,#_S
-	add	hl,bc
-	ld	c,l
-	ld	b,h
-	ld	e, c
-	ld	d, b
-	ld	a,(de)
-	ld	hl,#_pastx
-	ld	(hl+),a
-	inc	de
-	ld	a,(de)
-	ld	(hl),a
-;Snek.c:199: pasty = S[i].ypos;
-	ld	hl,#0x0002
-	add	hl,bc
-	ld	a,l
-	ld	d,h
-	ldhl	sp,#1
-	ld	(hl+),a
-	ld	(hl),d
-	dec	hl
-	ld	e,(hl)
-	inc	hl
-	ld	d,(hl)
-	ld	a,(de)
-	ld	hl,#_pasty
-	ld	(hl+),a
-	inc	de
-	ld	a,(de)
-	ld	(hl),a
-;Snek.c:200: pastdir = S[i].dir;
-	ld	hl,#0x0004
-	add	hl,bc
-	ld	a,l
-	ld	d,h
-	ldhl	sp,#1
-	ld	(hl+),a
-	ld	(hl),d
-	dec	hl
-	ld	e,(hl)
-	inc	hl
-	ld	d,(hl)
-	ld	a,(de)
-	ld	hl,#_pastdir
-	ld	(hl),a
-;Snek.c:201: S[i].xpos = newx;
-	ld	hl,#_newx
-	ld	a,(hl)
-	ld	(bc),a
-	inc	bc
-	inc	hl
-	ld	a,(hl)
-	ld	(bc),a
-;Snek.c:202: S[i].ypos = newy;
-	ld	hl,#_i + 1
-	dec	hl
-	ld	c,(hl)
-	inc	hl
-	ld	b,(hl)
-	ld	l, c
-	ld	h, b
-	add	hl, hl
-	add	hl, hl
-	add	hl, bc
-	ld	c,l
-	ld	b,h
-	ld	hl,#_S
-	add	hl,bc
-	ld	c,l
-	ld	b,h
-	inc	bc
-	inc	bc
-	ld	hl,#_newy
-	ld	a,(hl)
-	ld	(bc),a
-	inc	bc
-	inc	hl
-	ld	a,(hl)
-	ld	(bc),a
-;Snek.c:203: S[i].dir = newdir;
-	ld	hl,#_i + 1
-	dec	hl
-	ld	c,(hl)
-	inc	hl
-	ld	b,(hl)
-	ld	l, c
-	ld	h, b
-	add	hl, hl
-	add	hl, hl
-	add	hl, bc
-	ld	c,l
-	ld	b,h
-	ld	hl,#_S
-	add	hl,bc
-	ld	c,l
-	ld	b,h
-	inc	bc
-	inc	bc
-	inc	bc
-	inc	bc
-	ld	hl,#_newdir
-	ld	a,(hl)
-	ld	(bc),a
-00130$:
-;Snek.c:177: for(i = 0; i != size; i++)
-	ld	hl,#_i
-	inc	(hl)
-	jp	NZ,00129$
-	inc	hl
-	inc	(hl)
-	jp	00129$
-00115$:
-;Snek.c:206: delay(100);
-	ld	hl,#0x0064
-	push	hl
-	call	_delay
-	add	sp, #2
-;Snek.c:208: break ;
-	jp	00134$
-;Snek.c:210: case 'd':
-00116$:
-;Snek.c:212: for(i = 0;i != size; i++)
-	ld	hl,#_i
-	ld	(hl),#0x00
-	inc	hl
-	ld	(hl),#0x00
-00132$:
-	ld	hl,#_i
-	ld	a,(hl)
-	ld	hl,#_size
-	sub	a, (hl)
-	jr	NZ,00210$
-	ld	hl,#_i + 1
-	ld	a,(hl)
-	ld	hl,#_size + 1
-	sub	a, (hl)
-	jp	Z,00120$
-00210$:
-;Snek.c:115: move_sprite(i,newx,newy);
-	push	hl
-	ld	hl,#_i
-	ld	a,(hl)
-	ldhl	sp,#3
-	ld	(hl),a
-	pop	hl
-;Snek.c:214: if(i == 0){
-	ld	hl,#_i + 1
-	ld	a,(hl-)
-	or	a,(hl)
-	jp	NZ,00118$
-;Snek.c:215: newx = S[i].xpos;
-	ld	c,(hl)
-	inc	hl
-	ld	b,(hl)
-	ld	l, c
-	ld	h, b
-	add	hl, hl
-	add	hl, hl
-	add	hl, bc
-	ld	c,l
-	ld	b,h
-	ld	hl,#_S
-	add	hl,bc
-	ld	a,l
-	ld	d,h
-	ldhl	sp,#3
-	ld	(hl+),a
-	ld	(hl),d
-	dec	hl
-	ld	e,(hl)
-	inc	hl
-	ld	d,(hl)
-	ld	a,(de)
-	ld	hl,#_newx
-	ld	(hl+),a
-	inc	de
-	ld	a,(de)
-	ld	(hl),a
-;Snek.c:216: newy = S[i].ypos + 8;
-	ldhl	sp,#(4 - 1)
-	ld	c,(hl)
-	inc	hl
-	ld	b,(hl)
-	inc	bc
-	inc	bc
-	ld	e, c
-	ld	d, b
-	ld	a,(de)
-	ld	c,a
-	inc	de
-	ld	a,(de)
-	ld	b,a
-	ld	hl,#0x0008
-	add	hl,bc
-	ld	a,l
-	ld	d,h
-	ld	hl,#_newy
-	ld	(hl+),a
-	ld	(hl),d
-;Snek.c:217: newdir = S[i].dir;
-	ldhl	sp,#(4 - 1)
-	ld	e,(hl)
-	inc	hl
-	ld	d,(hl)
-	ld	hl,#0x0004
-	add	hl,de
-	ld	c,l
-	ld	b,h
-	ld	a,(bc)
-	ld	hl,#_newdir
-	ld	(hl),a
-;Snek.c:218: move_sprite(i,newx,newy);
-	ld	hl,#_newy
-	ld	b,(hl)
-	ld	hl,#_newx
-	ld	d,(hl)
-	push	bc
-	inc	sp
-	push	de
 	inc	sp
 	ldhl	sp,#3
 	ld	a,(hl)
@@ -2548,7 +2155,7 @@ _update::
 	ld	a,(de)
 	ld	hl,#_pastdir
 	ld	(hl),a
-;Snek.c:223: S[i].xpos = newx;
+;Snek.c:224: S[i].xpos = newx;
 	ld	hl,#_newx
 	ld	a,(hl)
 	ld	(bc),a
@@ -2556,7 +2163,7 @@ _update::
 	inc	hl
 	ld	a,(hl)
 	ld	(bc),a
-;Snek.c:224: S[i].ypos = newy;
+;Snek.c:225: S[i].ypos = newy;
 	ld	hl,#_i + 1
 	dec	hl
 	ld	c,(hl)
@@ -2582,7 +2189,400 @@ _update::
 	inc	hl
 	ld	a,(hl)
 	ld	(bc),a
-;Snek.c:225: S[i].dir = newdir;
+;Snek.c:226: S[i].dir = newdir;
+	ld	hl,#_i + 1
+	dec	hl
+	ld	c,(hl)
+	inc	hl
+	ld	b,(hl)
+	ld	l, c
+	ld	h, b
+	add	hl, hl
+	add	hl, hl
+	add	hl, bc
+	ld	c,l
+	ld	b,h
+	ld	hl,#_S
+	add	hl,bc
+	ld	c,l
+	ld	b,h
+	inc	bc
+	inc	bc
+	inc	bc
+	inc	bc
+	ld	hl,#_newdir
+	ld	a,(hl)
+	ld	(bc),a
+	jp	00130$
+00113$:
+;Snek.c:231: newx = pastx ;
+	ld	hl,#_pastx
+	ld	a,(hl+)
+	ld	e, (hl)
+	ld	hl,#_newx
+	ld	(hl+),a
+	ld	(hl),e
+;Snek.c:232: newy = pasty;
+	ld	hl,#_pasty
+	ld	a,(hl+)
+	ld	e, (hl)
+	ld	hl,#_newy
+	ld	(hl+),a
+	ld	(hl),e
+;Snek.c:233: newdir = pastdir;
+	push	hl
+	ld	hl,#_pastdir
+	ld	a,(hl)
+	ld	hl,#_newdir
+	ld	(hl),a
+	pop	hl
+;Snek.c:234: move_sprite(i,newx,newy);
+	ld	hl,#_newy
+	ld	d,(hl)
+	ld	hl,#_newx
+	ld	b,(hl)
+	push	de
+	inc	sp
+	push	bc
+	inc	sp
+	ldhl	sp,#3
+	ld	a,(hl)
+	push	af
+	inc	sp
+	call	_move_sprite
+	add	sp, #3
+;Snek.c:237: pastx = S[i].xpos ;
+	ld	hl,#_i + 1
+	dec	hl
+	ld	c,(hl)
+	inc	hl
+	ld	b,(hl)
+	ld	l, c
+	ld	h, b
+	add	hl, hl
+	add	hl, hl
+	add	hl, bc
+	ld	c,l
+	ld	b,h
+	ld	hl,#_S
+	add	hl,bc
+	ld	c,l
+	ld	b,h
+	ld	e, c
+	ld	d, b
+	ld	a,(de)
+	ld	hl,#_pastx
+	ld	(hl+),a
+	inc	de
+	ld	a,(de)
+	ld	(hl),a
+;Snek.c:238: pasty = S[i].ypos;
+	ld	hl,#0x0002
+	add	hl,bc
+	ld	a,l
+	ld	d,h
+	ldhl	sp,#1
+	ld	(hl+),a
+	ld	(hl),d
+	dec	hl
+	ld	e,(hl)
+	inc	hl
+	ld	d,(hl)
+	ld	a,(de)
+	ld	hl,#_pasty
+	ld	(hl+),a
+	inc	de
+	ld	a,(de)
+	ld	(hl),a
+;Snek.c:239: pastdir = S[i].dir;
+	ld	hl,#0x0004
+	add	hl,bc
+	ld	a,l
+	ld	d,h
+	ldhl	sp,#1
+	ld	(hl+),a
+	ld	(hl),d
+	dec	hl
+	ld	e,(hl)
+	inc	hl
+	ld	d,(hl)
+	ld	a,(de)
+	ld	hl,#_pastdir
+	ld	(hl),a
+;Snek.c:242: S[i].xpos = newx;
+	ld	hl,#_newx
+	ld	a,(hl)
+	ld	(bc),a
+	inc	bc
+	inc	hl
+	ld	a,(hl)
+	ld	(bc),a
+;Snek.c:243: S[i].ypos = newy;
+	ld	hl,#_i + 1
+	dec	hl
+	ld	c,(hl)
+	inc	hl
+	ld	b,(hl)
+	ld	l, c
+	ld	h, b
+	add	hl, hl
+	add	hl, hl
+	add	hl, bc
+	ld	c,l
+	ld	b,h
+	ld	hl,#_S
+	add	hl,bc
+	ld	c,l
+	ld	b,h
+	inc	bc
+	inc	bc
+	ld	hl,#_newy
+	ld	a,(hl)
+	ld	(bc),a
+	inc	bc
+	inc	hl
+	ld	a,(hl)
+	ld	(bc),a
+;Snek.c:244: S[i].dir = newdir;
+	ld	hl,#_i + 1
+	dec	hl
+	ld	c,(hl)
+	inc	hl
+	ld	b,(hl)
+	ld	l, c
+	ld	h, b
+	add	hl, hl
+	add	hl, hl
+	add	hl, bc
+	ld	c,l
+	ld	b,h
+	ld	hl,#_S
+	add	hl,bc
+	ld	c,l
+	ld	b,h
+	inc	bc
+	inc	bc
+	inc	bc
+	inc	bc
+	ld	hl,#_newdir
+	ld	a,(hl)
+	ld	(bc),a
+00130$:
+;Snek.c:208: for(i = 0; i != size; i++)
+	ld	hl,#_i
+	inc	(hl)
+	jp	NZ,00129$
+	inc	hl
+	inc	(hl)
+	jp	00129$
+00115$:
+;Snek.c:247: delay(100);
+	ld	hl,#0x0064
+	push	hl
+	call	_delay
+	add	sp, #2
+;Snek.c:249: break ;
+	jp	00134$
+;Snek.c:251: case 'd':
+00116$:
+;Snek.c:254: for(i = 0;i != size; i++)
+	ld	hl,#_i
+	ld	(hl),#0x00
+	inc	hl
+	ld	(hl),#0x00
+00132$:
+	ld	hl,#_i
+	ld	a,(hl)
+	ld	hl,#_size
+	sub	a, (hl)
+	jr	NZ,00210$
+	ld	hl,#_i + 1
+	ld	a,(hl)
+	ld	hl,#_size + 1
+	sub	a, (hl)
+	jp	Z,00120$
+00210$:
+;Snek.c:126: move_sprite(i,newx,newy);
+	push	hl
+	ld	hl,#_i
+	ld	a,(hl)
+	ldhl	sp,#3
+	ld	(hl),a
+	pop	hl
+;Snek.c:257: if(i == 0){
+	ld	hl,#_i + 1
+	ld	a,(hl-)
+	or	a,(hl)
+	jp	NZ,00118$
+;Snek.c:259: newx = S[i].xpos;
+	ld	c,(hl)
+	inc	hl
+	ld	b,(hl)
+	ld	l, c
+	ld	h, b
+	add	hl, hl
+	add	hl, hl
+	add	hl, bc
+	ld	c,l
+	ld	b,h
+	ld	hl,#_S
+	add	hl,bc
+	ld	a,l
+	ld	d,h
+	ldhl	sp,#3
+	ld	(hl+),a
+	ld	(hl),d
+	dec	hl
+	ld	e,(hl)
+	inc	hl
+	ld	d,(hl)
+	ld	a,(de)
+	ld	hl,#_newx
+	ld	(hl+),a
+	inc	de
+	ld	a,(de)
+	ld	(hl),a
+;Snek.c:260: newy = S[i].ypos + 8;
+	ldhl	sp,#(4 - 1)
+	ld	c,(hl)
+	inc	hl
+	ld	b,(hl)
+	inc	bc
+	inc	bc
+	ld	e, c
+	ld	d, b
+	ld	a,(de)
+	ld	c,a
+	inc	de
+	ld	a,(de)
+	ld	b,a
+	ld	hl,#0x0008
+	add	hl,bc
+	ld	a,l
+	ld	d,h
+	ld	hl,#_newy
+	ld	(hl+),a
+	ld	(hl),d
+;Snek.c:261: newdir = S[i].dir;
+	ldhl	sp,#(4 - 1)
+	ld	e,(hl)
+	inc	hl
+	ld	d,(hl)
+	ld	hl,#0x0004
+	add	hl,de
+	ld	c,l
+	ld	b,h
+	ld	a,(bc)
+	ld	hl,#_newdir
+	ld	(hl),a
+;Snek.c:262: move_sprite(i,newx,newy);
+	ld	hl,#_newy
+	ld	b,(hl)
+	ld	hl,#_newx
+	ld	d,(hl)
+	push	bc
+	inc	sp
+	push	de
+	inc	sp
+	ldhl	sp,#3
+	ld	a,(hl)
+	push	af
+	inc	sp
+	call	_move_sprite
+	add	sp, #3
+;Snek.c:265: pastx = S[i].xpos ;
+	ld	hl,#_i + 1
+	dec	hl
+	ld	c,(hl)
+	inc	hl
+	ld	b,(hl)
+	ld	l, c
+	ld	h, b
+	add	hl, hl
+	add	hl, hl
+	add	hl, bc
+	ld	c,l
+	ld	b,h
+	ld	hl,#_S
+	add	hl,bc
+	ld	c,l
+	ld	b,h
+	ld	e, c
+	ld	d, b
+	ld	a,(de)
+	ld	hl,#_pastx
+	ld	(hl+),a
+	inc	de
+	ld	a,(de)
+	ld	(hl),a
+;Snek.c:266: pasty = S[i].ypos;
+	ld	hl,#0x0002
+	add	hl,bc
+	ld	a,l
+	ld	d,h
+	ldhl	sp,#3
+	ld	(hl+),a
+	ld	(hl),d
+	dec	hl
+	ld	e,(hl)
+	inc	hl
+	ld	d,(hl)
+	ld	a,(de)
+	ld	hl,#_pasty
+	ld	(hl+),a
+	inc	de
+	ld	a,(de)
+	ld	(hl),a
+;Snek.c:267: pastdir = S[i].dir;
+	ld	hl,#0x0004
+	add	hl,bc
+	ld	a,l
+	ld	d,h
+	ldhl	sp,#3
+	ld	(hl+),a
+	ld	(hl),d
+	dec	hl
+	ld	e,(hl)
+	inc	hl
+	ld	d,(hl)
+	ld	a,(de)
+	ld	hl,#_pastdir
+	ld	(hl),a
+;Snek.c:270: S[i].xpos = newx;
+	ld	hl,#_newx
+	ld	a,(hl)
+	ld	(bc),a
+	inc	bc
+	inc	hl
+	ld	a,(hl)
+	ld	(bc),a
+;Snek.c:271: S[i].ypos = newy;
+	ld	hl,#_i + 1
+	dec	hl
+	ld	c,(hl)
+	inc	hl
+	ld	b,(hl)
+	ld	l, c
+	ld	h, b
+	add	hl, hl
+	add	hl, hl
+	add	hl, bc
+	ld	c,l
+	ld	b,h
+	ld	hl,#_S
+	add	hl,bc
+	ld	c,l
+	ld	b,h
+	inc	bc
+	inc	bc
+	ld	hl,#_newy
+	ld	a,(hl)
+	ld	(bc),a
+	inc	bc
+	inc	hl
+	ld	a,(hl)
+	ld	(bc),a
+;Snek.c:272: S[i].dir = newdir;
 	ld	hl,#_i + 1
 	dec	hl
 	ld	c,(hl)
@@ -2608,28 +2608,28 @@ _update::
 	ld	(bc),a
 	jp	00133$
 00118$:
-;Snek.c:229: newx = pastx ;
+;Snek.c:277: newx = pastx ;
 	ld	hl,#_pastx
 	ld	a,(hl+)
 	ld	e, (hl)
 	ld	hl,#_newx
 	ld	(hl+),a
 	ld	(hl),e
-;Snek.c:230: newy = pasty;
+;Snek.c:278: newy = pasty;
 	ld	hl,#_pasty
 	ld	a,(hl+)
 	ld	e, (hl)
 	ld	hl,#_newy
 	ld	(hl+),a
 	ld	(hl),e
-;Snek.c:231: newdir = pastdir;
+;Snek.c:279: newdir = pastdir;
 	push	hl
 	ld	hl,#_pastdir
 	ld	a,(hl)
 	ld	hl,#_newdir
 	ld	(hl),a
 	pop	hl
-;Snek.c:232: move_sprite(i,newx,newy);
+;Snek.c:280: move_sprite(i,newx,newy);
 	ld	hl,#_newy
 	ld	d,(hl)
 	ld	hl,#_newx
@@ -2644,7 +2644,7 @@ _update::
 	inc	sp
 	call	_move_sprite
 	add	sp, #3
-;Snek.c:233: pastx = S[i].xpos ;
+;Snek.c:283: pastx = S[i].xpos ;
 	ld	hl,#_i + 1
 	dec	hl
 	ld	c,(hl)
@@ -2669,7 +2669,7 @@ _update::
 	inc	de
 	ld	a,(de)
 	ld	(hl),a
-;Snek.c:234: pasty = S[i].ypos;
+;Snek.c:284: pasty = S[i].ypos;
 	ld	hl,#0x0002
 	add	hl,bc
 	ld	a,l
@@ -2687,7 +2687,7 @@ _update::
 	inc	de
 	ld	a,(de)
 	ld	(hl),a
-;Snek.c:235: pastdir = S[i].dir;
+;Snek.c:285: pastdir = S[i].dir;
 	ld	hl,#0x0004
 	add	hl,bc
 	ld	a,l
@@ -2702,7 +2702,7 @@ _update::
 	ld	a,(de)
 	ld	hl,#_pastdir
 	ld	(hl),a
-;Snek.c:236: S[i].xpos = newx;
+;Snek.c:288: S[i].xpos = newx;
 	ld	hl,#_newx
 	ld	a,(hl)
 	ld	(bc),a
@@ -2710,7 +2710,7 @@ _update::
 	inc	hl
 	ld	a,(hl)
 	ld	(bc),a
-;Snek.c:237: S[i].ypos = newy;
+;Snek.c:289: S[i].ypos = newy;
 	ld	hl,#_i + 1
 	dec	hl
 	ld	c,(hl)
@@ -2736,7 +2736,7 @@ _update::
 	inc	hl
 	ld	a,(hl)
 	ld	(bc),a
-;Snek.c:238: S[i].dir = newdir;
+;Snek.c:290: S[i].dir = newdir;
 	ld	hl,#_i + 1
 	dec	hl
 	ld	c,(hl)
@@ -2761,7 +2761,7 @@ _update::
 	ld	a,(hl)
 	ld	(bc),a
 00133$:
-;Snek.c:212: for(i = 0;i != size; i++)
+;Snek.c:254: for(i = 0;i != size; i++)
 	ld	hl,#_i
 	inc	(hl)
 	jp	NZ,00132$
@@ -2769,21 +2769,21 @@ _update::
 	inc	(hl)
 	jp	00132$
 00120$:
-;Snek.c:241: delay(100);
+;Snek.c:293: delay(100);
 	ld	hl,#0x0064
 	push	hl
 	call	_delay
 	add	sp, #2
-;Snek.c:245: }
+;Snek.c:297: }
 00134$:
 	add	sp, #5
 	ret
-;Snek.c:248: void change() {
+;Snek.c:301: void change() {
 ;	---------------------------------
 ; Function change
 ; ---------------------------------
 _change::
-;Snek.c:249: switch (joypad()) {
+;Snek.c:303: switch (joypad()) {
 	call	_joypad
 	ld	a,e
 	dec	a
@@ -2798,65 +2798,65 @@ _change::
 	sub	a, #0x10
 	jr	Z,00113$
 	ret
-;Snek.c:251: case J_LEFT:
+;Snek.c:305: case J_LEFT:
 00101$:
-;Snek.c:252: if(S[0].dir != 'r')
+;Snek.c:307: if(S[0].dir != 'r')
 	ld	de,#_S+4
 	ld	a,(de)
 	sub	a, #0x72
 	ret	Z
-;Snek.c:254: S[0].dir = 'l';
+;Snek.c:310: S[0].dir = 'l';
 	ld	a,#0x6c
 	ld	(de),a
-;Snek.c:257: break;
+;Snek.c:312: break;
 	ret
-;Snek.c:259: case J_RIGHT:
+;Snek.c:314: case J_RIGHT:
 00104$:
-;Snek.c:260: if(S[0].dir != 'l')
+;Snek.c:316: if(S[0].dir != 'l')
 	ld	de,#_S+4
 	ld	a,(de)
 	sub	a, #0x6c
 	ret	Z
-;Snek.c:262: S[0].dir = 'r';
+;Snek.c:319: S[0].dir = 'r';
 	ld	a,#0x72
 	ld	(de),a
-;Snek.c:265: break;
+;Snek.c:321: break;
 	ret
-;Snek.c:267: case J_UP:
+;Snek.c:323: case J_UP:
 00107$:
-;Snek.c:268: if(S[0].dir != 'd')
+;Snek.c:325: if(S[0].dir != 'd')
 	ld	de,#_S+4
 	ld	a,(de)
 	sub	a, #0x64
 	ret	Z
-;Snek.c:270: S[0].dir = 'u' ;
+;Snek.c:328: S[0].dir = 'u' ;
 	ld	a,#0x75
 	ld	(de),a
-;Snek.c:273: break;
+;Snek.c:330: break;
 	ret
-;Snek.c:275: case J_DOWN:
+;Snek.c:332: case J_DOWN:
 00110$:
-;Snek.c:276: if(S[0].dir != 'u')
+;Snek.c:334: if(S[0].dir != 'u')
 	ld	de,#_S+4
 	ld	a,(de)
 	sub	a, #0x75
 	ret	Z
-;Snek.c:278: S[0].dir = 'd';
+;Snek.c:337: S[0].dir = 'd';
 	ld	a,#0x64
 	ld	(de),a
-;Snek.c:281: break;
+;Snek.c:339: break;
 	ret
-;Snek.c:283: case J_A:
+;Snek.c:342: case J_A:
 00113$:
-;Snek.c:285: grow();
-;Snek.c:287: }
+;Snek.c:344: grow();
+;Snek.c:346: }
 	jp	_grow
-;Snek.c:290: void main()
+;Snek.c:350: void main()
 ;	---------------------------------
 ; Function main
 ; ---------------------------------
 _main::
-;Snek.c:292: SPRITES_8x8 ;
+;Snek.c:353: SPRITES_8x8 ;
 	ld	de,#0xff40
 	ld	a,(de)
 	ld	c,a
@@ -2865,19 +2865,19 @@ _main::
 	ld	b,#0x00
 	ld	hl,#0xff40
 	ld	(hl),c
-;Snek.c:293: set_sprite_data(0,0,body) ;
+;Snek.c:356: set_sprite_data(0,0,body) ;
 	ld	hl,#_body
 	push	hl
 	ld	hl,#0x0000
 	push	hl
 	call	_set_sprite_data
 	add	sp, #4
-;Snek.c:294: set_sprite_tile(0,0);
+;Snek.c:358: set_sprite_tile(0,0);
 	ld	hl,#0x0000
 	push	hl
 	call	_set_sprite_tile
 	add	sp, #2
-;Snek.c:295: move_sprite(0,S[0].xpos,S[0].ypos);
+;Snek.c:360: move_sprite(0,S[0].xpos,S[0].ypos);
 	ld	de, #(_S + 0x0002) + 0
 	ld	a,(de)
 	ld	c,a
@@ -2902,7 +2902,7 @@ _main::
 	inc	sp
 	call	_move_sprite
 	add	sp, #3
-;Snek.c:296: SHOW_SPRITES;
+;Snek.c:362: SHOW_SPRITES;
 	ld	de,#0xff40
 	ld	a,(de)
 	ld	c,a
@@ -2912,21 +2912,21 @@ _main::
 	ld	c,a
 	ld	hl,#0xff40
 	ld	(hl),c
-;Snek.c:298: while(1)
+;Snek.c:365: while(1)
 00104$:
-;Snek.c:300: if(joypad())
+;Snek.c:368: if(joypad())
 	call	_joypad
 	ld	a,e
 	or	a, a
 	jr	Z,00102$
-;Snek.c:302: wait_vbl_done();
+;Snek.c:370: wait_vbl_done();
 	call	_wait_vbl_done
-;Snek.c:303: change();
+;Snek.c:372: change(); // Check if snake must change direction.
 	call	_change
 00102$:
-;Snek.c:305: wait_vbl_done();
+;Snek.c:375: wait_vbl_done();
 	call	_wait_vbl_done
-;Snek.c:306: update() ;
+;Snek.c:376: update() ; // Move snake along.
 	call	_update
 	jr	00104$
 	ret
